@@ -1,7 +1,25 @@
 scalar Url
+scalar Email
 
 type User {
     id: ID!
     username: String!
     avatarURL: Url
+}
+
+input RegisterInput {
+    username: String!
+    email: Email!
+    password: String!
+    avatarURL: Url
+}
+
+input LoginInput {
+    login: String!
+    password: String!
+}
+
+extend type Mutation {
+    login(input: LoginInput!): Boolean!
+    register(input: RegisterInput!): Boolean!
 }
