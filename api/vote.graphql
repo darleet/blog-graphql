@@ -1,0 +1,18 @@
+type VoteCounter {
+    value: Int!
+}
+
+enum VoteValue {
+    NONE # used for canceling vote
+    UP # +1 to votes
+    DOWN # -1 to votes
+}
+
+input Vote {
+    articleID: ID!
+    value: VoteValue!
+}
+
+extend type Mutation {
+    vote(input: Vote!): VoteCounter!
+}
