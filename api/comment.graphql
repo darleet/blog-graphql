@@ -16,6 +16,10 @@ input UpdateComment {
     content: String # is nullable due to other fields may be added
 }
 
+extend type Query {
+    commentsList(articleID: ID!, after: String, sort: Sort = NEW_DESC): [Comment!]
+}
+
 extend type Mutation {
     createComment(input: NewComment!): Comment!
     updateComment(input: UpdateComment): Comment!
