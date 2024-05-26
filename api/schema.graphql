@@ -4,6 +4,8 @@ schema {
     subscription: Subscription
 }
 
+scalar Time
+
 enum Sort {
     TOP_ASC
     TOP_DESC

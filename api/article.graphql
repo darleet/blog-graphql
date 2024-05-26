@@ -5,6 +5,7 @@ type Article {
     author: User!
     isClosed: Boolean!
     votes: Int!
+    createdAt: Time!
 }
 
 input NewArticle {

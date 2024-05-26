@@ -4,6 +4,7 @@ type Comment {
     author: User!
     votes: Int!
     replies: [Comment!]
+    createdAt: Time!
 }
 
 input NewComment {
