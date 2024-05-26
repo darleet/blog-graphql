@@ -1,17 +1,17 @@
-scalar Url
+scalar URL
 scalar Email
 
 type User {
     id: ID!
     username: String!
-    avatarURL: Url
+    avatarURL: URL
 }
 
 input RegisterInput {
     username: String!
     email: Email!
     password: String!
-    avatarURL: Url
+    avatarURL: URL
 }
 
 input LoginInput {
