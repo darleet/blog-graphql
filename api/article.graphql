@@ -1,0 +1,30 @@
+type Article {
+    id: ID!
+    title: String!
+    content: String!
+    author: User!
+    isClosed: Boolean!
+}
+
+input NewArticle {
+    title: String!
+    content: String!
+    isClosed: Boolean!
+}
+
+input UpdateArticle {
+    id: ID!
+    title: String
+    content: String
+    isClosed: Boolean
+}
+
+extend type Query {
+    articles(after: String, sort: Sort = NEW_DESC): [Article!]
+}
+
+extend type Mutation {
+    createArticle(input: NewArticle!): Article!
+    updateArticle(input: UpdateArticle!): Article!
+    deleteArticle(id: ID!): Boolean!
+}

@@ -3,6 +3,13 @@ schema {
     mutation: Mutation
 }
 
+enum Sort {
+    TOP_ASC
+    TOP_DESC
+    NEW_ASC
+    NEW_DESC
+}
+
 type Query {
 
 }
