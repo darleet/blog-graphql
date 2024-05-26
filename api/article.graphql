@@ -4,6 +4,7 @@ type Article {
     content: String!
     author: User!
     isClosed: Boolean!
+    comments: [Comment!]
 }
 
 input NewArticle {
@@ -20,7 +21,8 @@ input UpdateArticle {
 }
 
 extend type Query {
-    articles(after: String, sort: Sort = NEW_DESC): [Article!]
+    articlesList(after: String, sort: Sort = NEW_DESC): [Article!]
+    article(articleID: ID!): Article
 }
 
 extend type Mutation {
