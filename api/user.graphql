@@ -1,5 +1,7 @@
+scalar Url
+
 type User {
     id: ID!
     username: String!
-    avatarURL: String
+    avatarURL: Url
 }
