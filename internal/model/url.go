@@ -1,3 +1,5 @@
+// Receiver types are mixed due to gqlgen's interface of scalars
+
 package model
 
 import (
