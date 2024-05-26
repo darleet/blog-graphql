@@ -2,6 +2,7 @@ type Comment {
     id: ID!
     content: String!
     author: User!
+    votes: Int!
     replies: [Comment!]
 }
 

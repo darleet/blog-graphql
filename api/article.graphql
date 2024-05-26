@@ -4,6 +4,7 @@ type Article {
     content: String!
     author: User!
     isClosed: Boolean!
+    votes: Int!
     comments: [Comment!]
 }
 
