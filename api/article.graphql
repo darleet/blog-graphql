@@ -31,7 +31,3 @@ extend type Mutation {
     updateArticle(input: UpdateArticle!): Article!
     deleteArticle(id: ID!): Boolean!
 }
-
-type Subscription {
-    newComment(articleID: ID!): Comment!
-}

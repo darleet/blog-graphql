@@ -21,3 +21,7 @@ extend type Mutation {
     updateComment(input: UpdateComment): Comment!
     deleteComment(input: ID!): Boolean!
 }
+
+extend type Subscription {
+    newComment(articleID: ID!): Comment!
+}
