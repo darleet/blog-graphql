@@ -51,10 +51,10 @@ type Query struct {
 }
 
 type RegisterInput struct {
-	Username  string  `json:"username"`
-	Email     string  `json:"email"`
-	Password  string  `json:"password"`
-	AvatarURL *string `json:"avatarURL,omitempty"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	AvatarURL *URL   `json:"avatarURL,omitempty"`
 }
 
 type Subscription struct {
@@ -73,9 +73,9 @@ type UpdateComment struct {
 }
 
 type User struct {
-	ID        string  `json:"id"`
-	Username  string  `json:"username"`
-	AvatarURL *string `json:"avatarURL,omitempty"`
+	ID        string `json:"id"`
+	Username  string `json:"username"`
+	AvatarURL *URL   `json:"avatarURL,omitempty"`
 }
 
 type Vote struct {

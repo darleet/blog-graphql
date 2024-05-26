@@ -19,3 +19,7 @@ resolver:
   dir: internal/ports/gql/resolver
   package: resolver
   filename_template: "{name}.go"
+
+models:
+  URL:
+    model: github.com/darleet/blog-graphql/internal/model.URL

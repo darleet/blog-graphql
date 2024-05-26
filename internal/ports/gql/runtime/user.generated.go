@@ -138,9 +138,9 @@ func (ec *executionContext) _User_avatarURL(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*model.URL)
 	fc.Result = res
-	return ec.marshalOUrl2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOURL2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐURL(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_User_avatarURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -150,7 +150,7 @@ func (ec *executionContext) fieldContext_User_avatarURL(_ context.Context, field
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Url does not have child fields")
+			return nil, errors.New("field of type URL does not have child fields")
 		},
 	}
 	return fc, nil
@@ -231,7 +231,7 @@ func (ec *executionContext) unmarshalInputRegisterInput(ctx context.Context, obj
 			it.Password = data
 		case "avatarURL":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("avatarURL"))
-			data, err := ec.unmarshalOUrl2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOURL2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐURL(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -335,20 +335,20 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋdarleetᚋblogᚑgrap
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOUrl2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+func (ec *executionContext) unmarshalOURL2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐURL(ctx context.Context, v interface{}) (*model.URL, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
+	var res = new(model.URL)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOUrl2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+func (ec *executionContext) marshalOURL2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐURL(ctx context.Context, sel ast.SelectionSet, v *model.URL) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	res := graphql.MarshalString(*v)
-	return res
+	return v
 }
 
 // endregion ***************************** type.gotpl *****************************

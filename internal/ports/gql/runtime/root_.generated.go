@@ -604,20 +604,20 @@ type Mutation
 
 type Subscription
 `, BuiltIn: false},
-	{Name: "../../../../api/user.graphql", Input: `scalar Url
+	{Name: "../../../../api/user.graphql", Input: `scalar URL
 scalar Email
 
 type User {
     id: ID!
     username: String!
-    avatarURL: Url
+    avatarURL: URL
 }
 
 input RegisterInput {
     username: String!
     email: Email!
     password: String!
-    avatarURL: Url
+    avatarURL: URL
 }
 
 input LoginInput {
