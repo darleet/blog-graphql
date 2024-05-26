@@ -2,5 +2,21 @@ type Comment {
     id: ID!
     content: String!
     author: User!
-    parent: Comment
+    replies: [Comment!]
+}
+
+input NewComment {
+    content: String!
+    parentID: ID
+}
+
+input UpdateComment {
+    id: ID!
+    content: String # is nullable due to other fields may be added
+}
+
+extend type Mutation {
+    createComment(input: NewComment!): Comment!
+    updateComment(input: UpdateComment): Comment!
+    deleteComment(input: ID!): Boolean!
 }
