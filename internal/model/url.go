@@ -22,6 +22,6 @@ func (u *URL) UnmarshalGQL(v interface{}) error {
 	return nil
 }
 
-func (u *URL) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(string(*u)))
+func (u URL) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(string(u)))
 }
