@@ -52,7 +52,7 @@ type Query struct {
 
 type RegisterInput struct {
 	Username  string `json:"username"`
-	Email     string `json:"email"`
+	Email     Email  `json:"email"`
 	Password  string `json:"password"`
 	AvatarURL *URL   `json:"avatarURL,omitempty"`
 }

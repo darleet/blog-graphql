@@ -217,7 +217,7 @@ func (ec *executionContext) unmarshalInputRegisterInput(ctx context.Context, obj
 			it.Username = data
 		case "email":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-			data, err := ec.unmarshalNEmail2string(ctx, v)
+			data, err := ec.unmarshalNEmail2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐEmail(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -300,19 +300,14 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNEmail2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalString(v)
+func (ec *executionContext) unmarshalNEmail2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐEmail(ctx context.Context, v interface{}) (model.Email, error) {
+	var res model.Email
+	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNEmail2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalString(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
+func (ec *executionContext) marshalNEmail2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐEmail(ctx context.Context, sel ast.SelectionSet, v model.Email) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐLoginInput(ctx context.Context, v interface{}) (model.LoginInput, error) {

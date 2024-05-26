@@ -23,3 +23,5 @@ resolver:
 models:
   URL:
     model: github.com/darleet/blog-graphql/internal/model.URL
+  Email:
+    model: github.com/darleet/blog-graphql/internal/model.Email
