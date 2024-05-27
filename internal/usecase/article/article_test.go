@@ -46,7 +46,8 @@ func (s *ArticleTestSuite) TestCreate() {
 	s.repo.On("Create", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.NewArticle")).
-		Return(article, nil)
+		Return(article, nil).
+		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
 	got, err := s.uc.Create(ctx, input)
@@ -79,11 +80,13 @@ func (s *ArticleTestSuite) TestUpdate() {
 
 	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return("4321", nil)
+		Return("4321", nil).
+		Once()
 
 	s.repo.On("Update", mock.Anything,
 		mock.AnythingOfType("model.UpdateArticle")).
-		Return(article, nil)
+		Return(article, nil).
+		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
 	got, err := s.uc.Update(ctx, input)
@@ -105,7 +108,8 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 
 	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return("4321", nil)
+		Return("4321", nil).
+		Once()
 
 	ctx := utils.SetUserID(context.Background(), "1337")
 	got, err := s.uc.Update(ctx, input)
@@ -116,11 +120,13 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 func (s *ArticleTestSuite) TestDelete() {
 	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return("4321", nil)
+		Return("4321", nil).
+		Once()
 
 	s.repo.On("Delete", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return(true, nil)
+		Return(true, nil).
+		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
 	ok, err := s.uc.Delete(ctx, "1234")
@@ -131,7 +137,8 @@ func (s *ArticleTestSuite) TestDelete() {
 func (s *ArticleTestSuite) TestDeleteWrongAuthor() {
 	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return("4321", nil)
+		Return("4321", nil).
+		Once()
 
 	ctx := utils.SetUserID(context.Background(), "1337")
 	ok, err := s.uc.Delete(ctx, "1234")
@@ -143,7 +150,8 @@ func (s *ArticleTestSuite) TestGetList() {
 	s.repo.On("GetList", mock.Anything,
 		mock.AnythingOfType("*string"),
 		mock.AnythingOfType("*model.Sort")).
-		Return([]*model.Article{article}, nil)
+		Return([]*model.Article{article}, nil).
+		Once()
 
 	got, err := s.uc.GetList(context.Background(), nil, nil)
 	require.NoError(s.T(), err)
@@ -153,7 +161,8 @@ func (s *ArticleTestSuite) TestGetList() {
 func (s *ArticleTestSuite) TestGetByID() {
 	s.repo.On("Get", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return(article, nil)
+		Return(article, nil).
+		Once()
 
 	got, err := s.uc.Get(context.Background(), "1234")
 	require.NoError(s.T(), err)
