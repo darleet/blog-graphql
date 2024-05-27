@@ -6,32 +6,30 @@ package resolver
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/darleet/blog-graphql/internal/model"
 )
 
 // CreateArticle is the resolver for the createArticle field.
 func (r *mutationResolver) CreateArticle(ctx context.Context, input model.NewArticle) (*model.Article, error) {
-	panic(fmt.Errorf("not implemented: CreateArticle - createArticle"))
+	return r.articles.Create(ctx, input)
 }
 
 // UpdateArticle is the resolver for the updateArticle field.
 func (r *mutationResolver) UpdateArticle(ctx context.Context, input model.UpdateArticle) (*model.Article, error) {
-	panic(fmt.Errorf("not implemented: UpdateArticle - updateArticle"))
+	return r.articles.Update(ctx, input)
 }
 
 // DeleteArticle is the resolver for the deleteArticle field.
 func (r *mutationResolver) DeleteArticle(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteArticle - deleteArticle"))
+	return r.articles.Delete(ctx, id)
 }
 
 // ArticlesList is the resolver for the articlesList field.
 func (r *queryResolver) ArticlesList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
-	panic(fmt.Errorf("not implemented: ArticlesList - articlesList"))
+	return r.articles.GetList(ctx, after, sort)
 }
 
 // Article is the resolver for the article field.
 func (r *queryResolver) Article(ctx context.Context, articleID string) (*model.Article, error) {
-	panic(fmt.Errorf("not implemented: Article - article"))
+	return r.articles.GetByID(ctx, articleID)
 }
