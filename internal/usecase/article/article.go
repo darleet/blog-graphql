@@ -10,13 +10,13 @@ import (
 
 //go:generate mockery --name=Repository
 type Repository interface {
-	Create(ctx context.Context, userID string, input model.NewArticle) (*model.Article, error)
-	Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error)
-	Delete(ctx context.Context, id string) (bool, error)
-	GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
-	Get(ctx context.Context, articleID string) (*model.Article, error)
+	CreateArticle(ctx context.Context, userID string, input model.NewArticle) (*model.Article, error)
+	UpdateArticle(ctx context.Context, input model.UpdateArticle) (*model.Article, error)
+	DeleteArticle(ctx context.Context, id string) (bool, error)
+	GetArticlesList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
+	GetArticle(ctx context.Context, articleID string) (*model.Article, error)
 	GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
-	GetAuthorID(ctx context.Context, id string) (string, error)
+	GetArticleAuthorID(ctx context.Context, id string) (string, error)
 }
 
 type Usecase struct {
@@ -32,9 +32,9 @@ func NewUsecase(repo Repository) *Usecase {
 func (uc *Usecase) Create(ctx context.Context, input model.NewArticle) (*model.Article, error) {
 	userID := utils.GetUserID(ctx)
 	if userID == "" {
-		return nil, errors.NewUnauthorizedError("ArticleUsecase.Create: unauthenticated, userID is empty")
+		return nil, errors.NewUnauthorizedError("ArticleUsecase.CreateArticle: unauthenticated, userID is empty")
 	}
-	return uc.repo.Create(ctx, userID, input)
+	return uc.repo.CreateArticle(ctx, userID, input)
 }
 
 func (uc *Usecase) Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error) {
@@ -43,9 +43,9 @@ func (uc *Usecase) Update(ctx context.Context, input model.UpdateArticle) (*mode
 		return nil, err
 	}
 	if !isAuthor {
-		return nil, errors.NewForbiddenError("ArticleUsecase.Update: you are not the author of this article")
+		return nil, errors.NewForbiddenError("ArticleUsecase.UpdateArticle: you are not the author of this article")
 	}
-	return uc.repo.Update(ctx, input)
+	return uc.repo.UpdateArticle(ctx, input)
 }
 
 func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
@@ -54,17 +54,17 @@ func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
 		return false, err
 	}
 	if !isAuthor {
-		return false, errors.NewForbiddenError("ArticleUsecase.Delete: you are not the author of this article")
+		return false, errors.NewForbiddenError("ArticleUsecase.DeleteArticle: you are not the author of this article")
 	}
-	return uc.repo.Delete(ctx, id)
+	return uc.repo.DeleteArticle(ctx, id)
 }
 
 func (uc *Usecase) GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
-	return uc.repo.GetList(ctx, after, sort)
+	return uc.repo.GetArticlesList(ctx, after, sort)
 }
 
 func (uc *Usecase) Get(ctx context.Context, articleID string) (*model.Article, error) {
-	return uc.repo.Get(ctx, articleID)
+	return uc.repo.GetArticle(ctx, articleID)
 }
 
 func (uc *Usecase) GetComments(ctx context.Context, articleID string, after *string,

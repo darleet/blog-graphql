@@ -9,11 +9,11 @@ import (
 
 //go:generate mockery --name=Repository
 type Repository interface {
-	Create(ctx context.Context, userID string, input model.NewComment) (*model.Comment, error)
-	Update(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
-	Delete(ctx context.Context, id string) (bool, error)
+	CreateComment(ctx context.Context, userID string, input model.NewComment) (*model.Comment, error)
+	UpdateComment(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
+	DeleteComment(ctx context.Context, id string) (bool, error)
 	GetReplies(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
-	GetAuthorID(ctx context.Context, id string) (string, error)
+	GetCommentAuthorID(ctx context.Context, id string) (string, error)
 }
 
 type Usecase struct {
@@ -32,9 +32,9 @@ func NewUsecase(repo Repository) *Usecase {
 func (uc *Usecase) Create(ctx context.Context, input model.NewComment) (*model.Comment, error) {
 	userID := utils.GetUserID(ctx)
 	if userID == "" {
-		return nil, errors.NewUnauthorizedError("ArticleUsecase.Create: unauthenticated, userID is empty")
+		return nil, errors.NewUnauthorizedError("ArticleUsecase.CreateArticle: unauthenticated, userID is empty")
 	}
-	comment, err := uc.repo.Create(ctx, userID, input)
+	comment, err := uc.repo.CreateComment(ctx, userID, input)
 	if err != nil {
 		return nil, err
 	}
@@ -50,9 +50,9 @@ func (uc *Usecase) Update(ctx context.Context, input model.UpdateComment) (*mode
 		return nil, err
 	}
 	if !isAuthor {
-		return nil, errors.NewForbiddenError("CommentUsecase.Update: you are not the author of this comment")
+		return nil, errors.NewForbiddenError("CommentUsecase.UpdateArticle: you are not the author of this comment")
 	}
-	return uc.repo.Update(ctx, input)
+	return uc.repo.UpdateComment(ctx, input)
 }
 
 func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
@@ -61,9 +61,9 @@ func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
 		return false, err
 	}
 	if !isAuthor {
-		return false, errors.NewForbiddenError("CommentUsecase.Delete: you are not the author of this comment")
+		return false, errors.NewForbiddenError("CommentUsecase.DeleteArticle: you are not the author of this comment")
 	}
-	return uc.repo.Delete(ctx, id)
+	return uc.repo.DeleteComment(ctx, id)
 }
 
 func (uc *Usecase) GetReplies(ctx context.Context, articleID string, after *string,

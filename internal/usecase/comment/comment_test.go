@@ -41,7 +41,7 @@ func (s *CommentTestSuite) TestCreate() {
 		ArticleID: "1234",
 	}
 
-	s.repo.On("Create", mock.Anything,
+	s.repo.On("CreateComment", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.NewComment")).
 		Return(comment, nil).
@@ -70,12 +70,12 @@ func (s *CommentTestSuite) TestUpdate() {
 		Content: &comment.Content,
 	}
 
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetCommentAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("4321", nil).
 		Once()
 
-	s.repo.On("Update", mock.Anything,
+	s.repo.On("UpdateComment", mock.Anything,
 		mock.AnythingOfType("model.UpdateComment")).
 		Return(comment, nil).
 		Once()
@@ -92,7 +92,7 @@ func (s *CommentTestSuite) TestUpdateWrongAuthor() {
 		Content: &comment.Content,
 	}
 
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetCommentAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("1337", nil).
 		Once()
@@ -104,12 +104,12 @@ func (s *CommentTestSuite) TestUpdateWrongAuthor() {
 }
 
 func (s *CommentTestSuite) TestDelete() {
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetCommentAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("4321", nil).
 		Once()
 
-	s.repo.On("Delete", mock.Anything,
+	s.repo.On("DeleteComment", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(true, nil).
 		Once()
@@ -121,7 +121,7 @@ func (s *CommentTestSuite) TestDelete() {
 }
 
 func (s *CommentTestSuite) TestDeleteWrongAuthor() {
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetCommentAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("1337", nil).
 		Once()

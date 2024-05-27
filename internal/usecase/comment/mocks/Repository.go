@@ -14,8 +14,8 @@ type Repository struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, userID, input
-func (_m *Repository) Create(ctx context.Context, userID string, input model.NewComment) (*model.Comment, error) {
+// CreateComment provides a mock function with given fields: ctx, userID, input
+func (_m *Repository) CreateComment(ctx context.Context, userID string, input model.NewComment) (*model.Comment, error) {
 	ret := _m.Called(ctx, userID, input)
 
 	var r0 *model.Comment
@@ -40,8 +40,8 @@ func (_m *Repository) Create(ctx context.Context, userID string, input model.New
 	return r0, r1
 }
 
-// Delete provides a mock function with given fields: ctx, id
-func (_m *Repository) Delete(ctx context.Context, id string) (bool, error) {
+// DeleteComment provides a mock function with given fields: ctx, id
+func (_m *Repository) DeleteComment(ctx context.Context, id string) (bool, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 bool
@@ -64,8 +64,8 @@ func (_m *Repository) Delete(ctx context.Context, id string) (bool, error) {
 	return r0, r1
 }
 
-// GetAuthorID provides a mock function with given fields: ctx, id
-func (_m *Repository) GetAuthorID(ctx context.Context, id string) (string, error) {
+// GetCommentAuthorID provides a mock function with given fields: ctx, id
+func (_m *Repository) GetCommentAuthorID(ctx context.Context, id string) (string, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 string
@@ -114,8 +114,8 @@ func (_m *Repository) GetReplies(ctx context.Context, articleID string, after *s
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: ctx, input
-func (_m *Repository) Update(ctx context.Context, input model.UpdateComment) (*model.Comment, error) {
+// UpdateComment provides a mock function with given fields: ctx, input
+func (_m *Repository) UpdateComment(ctx context.Context, input model.UpdateComment) (*model.Comment, error) {
 	ret := _m.Called(ctx, input)
 
 	var r0 *model.Comment

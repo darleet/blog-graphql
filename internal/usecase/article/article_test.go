@@ -43,7 +43,7 @@ func (s *ArticleTestSuite) TestCreate() {
 		Content: "Some test article",
 	}
 
-	s.repo.On("Create", mock.Anything,
+	s.repo.On("CreateArticle", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.NewArticle")).
 		Return(article, nil).
@@ -78,12 +78,12 @@ func (s *ArticleTestSuite) TestUpdate() {
 		IsClosed: &isClosed,
 	}
 
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetArticleAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("4321", nil).
 		Once()
 
-	s.repo.On("Update", mock.Anything,
+	s.repo.On("UpdateArticle", mock.Anything,
 		mock.AnythingOfType("model.UpdateArticle")).
 		Return(article, nil).
 		Once()
@@ -106,7 +106,7 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 		IsClosed: &isClosed,
 	}
 
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetArticleAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("4321", nil).
 		Once()
@@ -118,12 +118,12 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 }
 
 func (s *ArticleTestSuite) TestDelete() {
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetArticleAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("4321", nil).
 		Once()
 
-	s.repo.On("Delete", mock.Anything,
+	s.repo.On("DeleteArticle", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(true, nil).
 		Once()
@@ -135,7 +135,7 @@ func (s *ArticleTestSuite) TestDelete() {
 }
 
 func (s *ArticleTestSuite) TestDeleteWrongAuthor() {
-	s.repo.On("GetAuthorID", mock.Anything,
+	s.repo.On("GetArticleAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return("4321", nil).
 		Once()
@@ -147,7 +147,7 @@ func (s *ArticleTestSuite) TestDeleteWrongAuthor() {
 }
 
 func (s *ArticleTestSuite) TestGetList() {
-	s.repo.On("GetList", mock.Anything,
+	s.repo.On("GetArticlesList", mock.Anything,
 		mock.AnythingOfType("*string"),
 		mock.AnythingOfType("*model.Sort")).
 		Return([]*model.Article{article}, nil).
@@ -159,7 +159,7 @@ func (s *ArticleTestSuite) TestGetList() {
 }
 
 func (s *ArticleTestSuite) TestGetByID() {
-	s.repo.On("Get", mock.Anything,
+	s.repo.On("GetArticle", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(article, nil).
 		Once()

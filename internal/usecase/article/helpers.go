@@ -11,7 +11,7 @@ func (uc *Usecase) IsAuthor(ctx context.Context, articleID string) (bool, error)
 	if userID == "" {
 		return false, errors.NewUnauthorizedError("ArticleUsecase.IsAuthor: unauthenticated, userID is empty")
 	}
-	authorID, err := uc.repo.GetAuthorID(ctx, articleID)
+	authorID, err := uc.repo.GetArticleAuthorID(ctx, articleID)
 	if err != nil {
 		return false, err
 	}

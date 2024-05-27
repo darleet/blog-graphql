@@ -14,8 +14,8 @@ type Repository struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, userID, input
-func (_m *Repository) Create(ctx context.Context, userID string, input model.NewArticle) (*model.Article, error) {
+// CreateArticle provides a mock function with given fields: ctx, userID, input
+func (_m *Repository) CreateArticle(ctx context.Context, userID string, input model.NewArticle) (*model.Article, error) {
 	ret := _m.Called(ctx, userID, input)
 
 	var r0 *model.Article
@@ -40,8 +40,8 @@ func (_m *Repository) Create(ctx context.Context, userID string, input model.New
 	return r0, r1
 }
 
-// Delete provides a mock function with given fields: ctx, id
-func (_m *Repository) Delete(ctx context.Context, id string) (bool, error) {
+// DeleteArticle provides a mock function with given fields: ctx, id
+func (_m *Repository) DeleteArticle(ctx context.Context, id string) (bool, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 bool
@@ -64,8 +64,8 @@ func (_m *Repository) Delete(ctx context.Context, id string) (bool, error) {
 	return r0, r1
 }
 
-// Get provides a mock function with given fields: ctx, articleID
-func (_m *Repository) Get(ctx context.Context, articleID string) (*model.Article, error) {
+// GetArticle provides a mock function with given fields: ctx, articleID
+func (_m *Repository) GetArticle(ctx context.Context, articleID string) (*model.Article, error) {
 	ret := _m.Called(ctx, articleID)
 
 	var r0 *model.Article
@@ -90,8 +90,8 @@ func (_m *Repository) Get(ctx context.Context, articleID string) (*model.Article
 	return r0, r1
 }
 
-// GetAuthorID provides a mock function with given fields: ctx, id
-func (_m *Repository) GetAuthorID(ctx context.Context, id string) (string, error) {
+// GetArticleAuthorID provides a mock function with given fields: ctx, id
+func (_m *Repository) GetArticleAuthorID(ctx context.Context, id string) (string, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 string
@@ -107,6 +107,32 @@ func (_m *Repository) GetAuthorID(ctx context.Context, id string) (string, error
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
 		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetArticlesList provides a mock function with given fields: ctx, after, sort
+func (_m *Repository) GetArticlesList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
+	ret := _m.Called(ctx, after, sort)
+
+	var r0 []*model.Article
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *string, *model.Sort) ([]*model.Article, error)); ok {
+		return rf(ctx, after, sort)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *string, *model.Sort) []*model.Article); ok {
+		r0 = rf(ctx, after, sort)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.Article)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *string, *model.Sort) error); ok {
+		r1 = rf(ctx, after, sort)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -140,34 +166,8 @@ func (_m *Repository) GetComments(ctx context.Context, articleID string, after *
 	return r0, r1
 }
 
-// GetList provides a mock function with given fields: ctx, after, sort
-func (_m *Repository) GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
-	ret := _m.Called(ctx, after, sort)
-
-	var r0 []*model.Article
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, *string, *model.Sort) ([]*model.Article, error)); ok {
-		return rf(ctx, after, sort)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, *string, *model.Sort) []*model.Article); ok {
-		r0 = rf(ctx, after, sort)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*model.Article)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, *string, *model.Sort) error); ok {
-		r1 = rf(ctx, after, sort)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// Update provides a mock function with given fields: ctx, input
-func (_m *Repository) Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error) {
+// UpdateArticle provides a mock function with given fields: ctx, input
+func (_m *Repository) UpdateArticle(ctx context.Context, input model.UpdateArticle) (*model.Article, error) {
 	ret := _m.Called(ctx, input)
 
 	var r0 *model.Article

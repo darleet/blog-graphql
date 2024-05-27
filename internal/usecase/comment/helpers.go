@@ -11,7 +11,7 @@ func (uc *Usecase) IsAuthor(ctx context.Context, commentID string) (bool, error)
 	if userID == "" {
 		return false, errors.NewUnauthorizedError("CommentUsecase.IsAuthor: unauthenticated, userID is empty")
 	}
-	authorID, err := uc.repo.GetAuthorID(ctx, commentID)
+	authorID, err := uc.repo.GetCommentAuthorID(ctx, commentID)
 	if err != nil {
 		return false, err
 	}
