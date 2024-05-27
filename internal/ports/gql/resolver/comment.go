@@ -18,7 +18,7 @@ func (r *commentResolver) Author(ctx context.Context, obj *model.Comment) (*mode
 
 // Votes is the resolver for the votes field.
 func (r *commentResolver) Votes(ctx context.Context, obj *model.Comment) (int, error) {
-	return r.votes.GetVotes(ctx, obj.ID)
+	return r.votes.GetCommentVotes(ctx, obj.ID)
 }
 
 // Replies is the resolver for the replies field.

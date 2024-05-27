@@ -35,8 +35,10 @@ type UserUsecase interface {
 }
 
 type VoteUsecase interface {
-	GetVotes(ctx context.Context, articleID string) (int, error)
-	ProcessVote(ctx context.Context, input model.Vote) (int, error)
+	GetArticleVotes(ctx context.Context, articleID string) (int, error)
+	GetCommentVotes(ctx context.Context, commentID string) (int, error)
+	VoteArticle(ctx context.Context, input model.VoteArticle) (int, error)
+	VoteComment(ctx context.Context, input model.VoteComment) (int, error)
 }
 
 type Resolver struct {

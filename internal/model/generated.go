@@ -59,8 +59,13 @@ type User struct {
 	AvatarURL *URL   `json:"avatarURL,omitempty"`
 }
 
-type Vote struct {
+type VoteArticle struct {
 	ArticleID string    `json:"articleID"`
+	Value     VoteValue `json:"value"`
+}
+
+type VoteComment struct {
+	CommentID string    `json:"commentID"`
 	Value     VoteValue `json:"value"`
 }
 

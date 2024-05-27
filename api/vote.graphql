@@ -4,11 +4,17 @@ enum VoteValue {
     DOWN # -1 to votes
 }
 
-input Vote {
+input VoteArticle {
     articleID: ID!
     value: VoteValue!
 }
 
+input VoteComment {
+    commentID: ID!
+    value: VoteValue!
+}
+
 extend type Mutation {
-    vote(input: Vote!): Int! @isAuthenticated
+    voteArticle(input: VoteArticle!): Int! @isAuthenticated
+    voteComment(input: VoteComment!): Int! @isAuthenticated
 }

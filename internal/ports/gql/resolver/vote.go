@@ -10,7 +10,12 @@ import (
 	"github.com/darleet/blog-graphql/internal/model"
 )
 
-// Vote is the resolver for the vote field.
-func (r *mutationResolver) Vote(ctx context.Context, input model.Vote) (int, error) {
-	return r.votes.ProcessVote(ctx, input)
+// VoteArticle is the resolver for the voteArticle field.
+func (r *mutationResolver) VoteArticle(ctx context.Context, input model.VoteArticle) (int, error) {
+	return r.votes.VoteArticle(ctx, input)
+}
+
+// VoteComment is the resolver for the voteComment field.
+func (r *mutationResolver) VoteComment(ctx context.Context, input model.VoteComment) (int, error) {
+	return r.votes.VoteComment(ctx, input)
 }

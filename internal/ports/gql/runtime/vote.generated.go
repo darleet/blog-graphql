@@ -28,8 +28,8 @@ import (
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputVote(ctx context.Context, obj interface{}) (model.Vote, error) {
-	var it model.Vote
+func (ec *executionContext) unmarshalInputVoteArticle(ctx context.Context, obj interface{}) (model.VoteArticle, error) {
+	var it model.VoteArticle
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -62,6 +62,40 @@ func (ec *executionContext) unmarshalInputVote(ctx context.Context, obj interfac
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputVoteComment(ctx context.Context, obj interface{}) (model.VoteComment, error) {
+	var it model.VoteComment
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"commentID", "value"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "commentID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("commentID"))
+			data, err := ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CommentID = data
+		case "value":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+			data, err := ec.unmarshalNVoteValue2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVoteValue(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Value = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -74,8 +108,13 @@ func (ec *executionContext) unmarshalInputVote(ctx context.Context, obj interfac
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNVote2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVote(ctx context.Context, v interface{}) (model.Vote, error) {
-	res, err := ec.unmarshalInputVote(ctx, v)
+func (ec *executionContext) unmarshalNVoteArticle2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVoteArticle(ctx context.Context, v interface{}) (model.VoteArticle, error) {
+	res, err := ec.unmarshalInputVoteArticle(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNVoteComment2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVoteComment(ctx context.Context, v interface{}) (model.VoteComment, error) {
+	res, err := ec.unmarshalInputVoteComment(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

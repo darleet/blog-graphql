@@ -127,15 +127,14 @@ func (r *Repository) GetArticlesList(ctx context.Context, after *string,
 	}
 
 	res := make([]*model.Article, 0, ArticleLimit)
-	articles = articles[:ArticleLimit]
-	for _, v := range articles {
+	for k := 0; k < ArticleLimit && k < len(articles); k++ {
 		res = append(res, &model.Article{
-			ID:        strconv.FormatUint(v.ID, 10),
-			Title:     v.Title,
-			Content:   v.Content,
-			UserID:    strconv.FormatUint(v.UserID, 10),
-			IsClosed:  v.IsClosed,
-			CreatedAt: v.CreatedAt,
+			ID:        strconv.FormatUint(articles[k].ID, 10),
+			Title:     articles[k].Title,
+			Content:   articles[k].Content,
+			UserID:    strconv.FormatUint(articles[k].UserID, 10),
+			IsClosed:  articles[k].IsClosed,
+			CreatedAt: articles[k].CreatedAt,
 		})
 	}
 
@@ -209,13 +208,12 @@ func (r *Repository) GetComments(ctx context.Context, articleID string, after *s
 	}
 
 	res := make([]*model.Comment, 0, CommentLimit)
-	comments = comments[:CommentLimit]
-	for _, v := range comments {
+	for k := 0; k < CommentLimit && k < len(comments); k++ {
 		res = append(res, &model.Comment{
-			ID:        strconv.FormatUint(v.ID, 10),
-			Content:   v.Content,
-			UserID:    strconv.FormatUint(v.UserID, 10),
-			CreatedAt: v.CreatedAt,
+			ID:        strconv.FormatUint(comments[k].ID, 10),
+			Content:   comments[k].Content,
+			UserID:    strconv.FormatUint(comments[k].UserID, 10),
+			CreatedAt: comments[k].CreatedAt,
 		})
 	}
 

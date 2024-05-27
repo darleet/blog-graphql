@@ -74,7 +74,8 @@ type ComplexityRoot struct {
 		Register      func(childComplexity int, input model.RegisterInput) int
 		UpdateArticle func(childComplexity int, input model.UpdateArticle) int
 		UpdateComment func(childComplexity int, input model.UpdateComment) int
-		Vote          func(childComplexity int, input model.Vote) int
+		VoteArticle   func(childComplexity int, input model.VoteArticle) int
+		VoteComment   func(childComplexity int, input model.VoteComment) int
 	}
 
 	Query struct {
@@ -316,17 +317,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateComment(childComplexity, args["input"].(model.UpdateComment)), true
 
-	case "Mutation.vote":
-		if e.complexity.Mutation.Vote == nil {
+	case "Mutation.voteArticle":
+		if e.complexity.Mutation.VoteArticle == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_vote_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_voteArticle_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Vote(childComplexity, args["input"].(model.Vote)), true
+		return e.complexity.Mutation.VoteArticle(childComplexity, args["input"].(model.VoteArticle)), true
+
+	case "Mutation.voteComment":
+		if e.complexity.Mutation.VoteComment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_voteComment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.VoteComment(childComplexity, args["input"].(model.VoteComment)), true
 
 	case "Query.article":
 		if e.complexity.Query.Article == nil {
@@ -399,7 +412,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputRegisterInput,
 		ec.unmarshalInputUpdateArticle,
 		ec.unmarshalInputUpdateComment,
-		ec.unmarshalInputVote,
+		ec.unmarshalInputVoteArticle,
+		ec.unmarshalInputVoteComment,
 	)
 	first := true
 
@@ -634,13 +648,19 @@ extend type Mutation {
     DOWN # -1 to votes
 }
 
-input Vote {
+input VoteArticle {
     articleID: ID!
     value: VoteValue!
 }
 
+input VoteComment {
+    commentID: ID!
+    value: VoteValue!
+}
+
 extend type Mutation {
-    vote(input: Vote!): Int! @isAuthenticated
+    voteArticle(input: VoteArticle!): Int! @isAuthenticated
+    voteComment(input: VoteComment!): Int! @isAuthenticated
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

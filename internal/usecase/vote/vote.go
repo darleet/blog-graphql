@@ -2,7 +2,6 @@ package vote
 
 import (
 	"context"
-	errs "errors"
 	"github.com/darleet/blog-graphql/internal/model"
 	"github.com/darleet/blog-graphql/pkg/errors"
 	"github.com/darleet/blog-graphql/pkg/utils"
@@ -10,10 +9,10 @@ import (
 
 //go:generate mockery --name=Repository
 type Repository interface {
-	GetUserVote(ctx context.Context, userID, articleID string) (model.VoteValue, error)
-	GetVotes(ctx context.Context, articleID string) (int, error)
-	SetVote(ctx context.Context, userID string, value model.Vote) error
-	InsertVote(ctx context.Context, userID string, value model.Vote) error
+	GetArticleVotes(ctx context.Context, articleID string) (int, error)
+	GetCommentVotes(ctx context.Context, commentID string) (int, error)
+	SetArticleVote(ctx context.Context, userID string, value model.VoteArticle) error
+	SetCommentVote(ctx context.Context, userID string, value model.VoteComment) error
 }
 
 type Usecase struct {
@@ -26,27 +25,34 @@ func NewUsecase(repo Repository) *Usecase {
 	}
 }
 
-func (uc *Usecase) GetVotes(ctx context.Context, articleID string) (int, error) {
-	return uc.repo.GetVotes(ctx, articleID)
+func (uc *Usecase) GetArticleVotes(ctx context.Context, articleID string) (int, error) {
+	return uc.repo.GetArticleVotes(ctx, articleID)
 }
 
-func (uc *Usecase) ProcessVote(ctx context.Context, input model.Vote) (int, error) {
+func (uc *Usecase) GetCommentVotes(ctx context.Context, commentID string) (int, error) {
+	return uc.repo.GetCommentVotes(ctx, commentID)
+}
+
+func (uc *Usecase) VoteArticle(ctx context.Context, input model.VoteArticle) (int, error) {
 	userID := utils.GetUserID(ctx)
 	if userID == "" {
-		return 0, errors.NewUnauthorizedError("VoteUsecase.ProcessVote: unauthenticated, userID is empty")
+		return 0, errors.NewUnauthorizedError("VoteUsecase.VoteArticle: unauthenticated, userID is empty")
 	}
-
-	vote, err := uc.repo.GetUserVote(ctx, userID, input.ArticleID)
-	if err != nil && errs.Is(err, errors.NotFound) {
-		err = uc.repo.InsertVote(ctx, userID, input)
-	} else if err != nil {
-		return 0, err
-	} else if vote != input.Value {
-		err = uc.repo.SetVote(ctx, userID, input)
-	}
-
+	err := uc.repo.SetArticleVote(ctx, userID, input)
 	if err != nil {
 		return 0, err
 	}
-	return uc.repo.GetVotes(ctx, input.ArticleID)
+	return uc.repo.GetArticleVotes(ctx, input.ArticleID)
+}
+
+func (uc *Usecase) VoteComment(ctx context.Context, input model.VoteComment) (int, error) {
+	userID := utils.GetUserID(ctx)
+	if userID == "" {
+		return 0, errors.NewUnauthorizedError("VoteUsecase.VoteComment: unauthenticated, userID is empty")
+	}
+	err := uc.repo.SetCommentVote(ctx, userID, input)
+	if err != nil {
+		return 0, err
+	}
+	return uc.repo.GetCommentVotes(ctx, input.CommentID)
 }

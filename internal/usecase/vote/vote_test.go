@@ -40,13 +40,13 @@ func (s *VoteTestSuite) TestProcessVoteInsert() {
 		Return(nil).
 		Once()
 
-	s.repo.On("GetVotes", mock.Anything,
+	s.repo.On("GetArticleVotes", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(1, nil).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
-	got, err := s.uc.ProcessVote(ctx, model.Vote{
+	got, err := s.uc.VoteArticle(ctx, model.Vote{
 		ArticleID: "1234",
 		Value:     model.VoteValueUp,
 	})
@@ -67,13 +67,13 @@ func (s *VoteTestSuite) TestProcessVoteUpdate() {
 		Return(nil).
 		Once()
 
-	s.repo.On("GetVotes", mock.Anything,
+	s.repo.On("GetArticleVotes", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(-1, nil).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
-	got, err := s.uc.ProcessVote(ctx, model.Vote{
+	got, err := s.uc.VoteArticle(ctx, model.Vote{
 		ArticleID: "1234",
 		Value:     model.VoteValueDown,
 	})
@@ -82,7 +82,7 @@ func (s *VoteTestSuite) TestProcessVoteUpdate() {
 }
 
 func (s *VoteTestSuite) TestProcessVoteNoID() {
-	got, err := s.uc.ProcessVote(context.Background(), model.Vote{
+	got, err := s.uc.VoteArticle(context.Background(), model.Vote{
 		ArticleID: "1234",
 		Value:     model.VoteValueUp,
 	})
