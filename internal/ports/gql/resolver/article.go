@@ -19,7 +19,7 @@ func (r *articleResolver) Author(ctx context.Context, obj *model.Article) (*mode
 
 // Comments is the resolver for the comments field.
 func (r *articleResolver) Comments(ctx context.Context, obj *model.Article, after *string, sort *model.Sort) ([]*model.Comment, error) {
-	panic(fmt.Errorf("not implemented: Comments - comments"))
+	return r.articles.GetComments(ctx, obj.ID, after, sort)
 }
 
 // CreateArticle is the resolver for the createArticle field.
