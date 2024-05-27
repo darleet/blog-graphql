@@ -90,6 +90,30 @@ func (_m *Repository) Get(ctx context.Context, articleID string) (*model.Article
 	return r0, r1
 }
 
+// GetAuthorID provides a mock function with given fields: ctx, id
+func (_m *Repository) GetAuthorID(ctx context.Context, id string) (string, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (string, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) string); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetComments provides a mock function with given fields: ctx, articleID, after, sort
 func (_m *Repository) GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error) {
 	ret := _m.Called(ctx, articleID, after, sort)

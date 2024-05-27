@@ -16,6 +16,7 @@ type Repository interface {
 	GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
 	Get(ctx context.Context, articleID string) (*model.Article, error)
 	GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
+	GetAuthorID(ctx context.Context, id string) (string, error)
 }
 
 type Usecase struct {

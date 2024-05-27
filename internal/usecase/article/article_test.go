@@ -77,9 +77,9 @@ func (s *ArticleTestSuite) TestUpdate() {
 		IsClosed: &isClosed,
 	}
 
-	s.repo.On("Get", mock.Anything,
+	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return(article, nil)
+		Return("4321", nil)
 
 	s.repo.On("Update", mock.Anything,
 		mock.AnythingOfType("model.UpdateArticle")).
@@ -103,9 +103,9 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 		IsClosed: &isClosed,
 	}
 
-	s.repo.On("Get", mock.Anything,
+	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return(article, nil)
+		Return("4321", nil)
 
 	ctx := utils.SetUserID(context.Background(), "1337")
 	got, err := s.uc.Update(ctx, input)
@@ -114,9 +114,9 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 }
 
 func (s *ArticleTestSuite) TestDelete() {
-	s.repo.On("Get", mock.Anything,
+	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return(article, nil)
+		Return("4321", nil)
 
 	s.repo.On("Delete", mock.Anything,
 		mock.AnythingOfType("string")).
@@ -129,9 +129,9 @@ func (s *ArticleTestSuite) TestDelete() {
 }
 
 func (s *ArticleTestSuite) TestDeleteWrongAuthor() {
-	s.repo.On("Get", mock.Anything,
+	s.repo.On("GetAuthorID", mock.Anything,
 		mock.AnythingOfType("string")).
-		Return(article, nil)
+		Return("4321", nil)
 
 	ctx := utils.SetUserID(context.Background(), "1337")
 	ok, err := s.uc.Delete(ctx, "1234")
