@@ -23,10 +23,10 @@ type ArticleUsecase interface {
 }
 
 type CommentUsecase interface {
-	Create(ctx context.Context, articleID string, input model.NewComment) (*model.Comment, error)
+	Create(ctx context.Context, input model.NewComment) (*model.Comment, error)
 	Update(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
 	Delete(ctx context.Context, id string) (bool, error)
-	GetList(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
+	GetReplies(ctx context.Context, id string, after *string, sort *model.Sort) ([]*model.Comment, error)
 	Subscribe(ctx context.Context, articleID string) (<-chan *model.Comment, error)
 }
 
