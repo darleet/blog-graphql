@@ -26,23 +26,8 @@ func NewUsecase(repo Repository) *Usecase {
 	}
 }
 
-func (a *Usecase) IsAuthor(ctx context.Context, articleID string) (bool, error) {
-	userID := utils.GetUserID(ctx)
-	if userID == "" {
-		return false, errors.NewUnauthorizedError("you are unauthorized to perform this action")
-	}
-	article, err := a.repo.GetByID(ctx, articleID)
-	if err != nil {
-		return false, err
-	}
-	return userID == article.Author.ID, nil
-}
-
 func (a *Usecase) Create(ctx context.Context, input model.NewArticle) (*model.Article, error) {
 	userID := utils.GetUserID(ctx)
-	if userID == "" {
-		return nil, errors.NewUnauthorizedError("you are unauthorized to perform this action")
-	}
 	return a.repo.Create(ctx, userID, input)
 }
 

@@ -14,5 +14,5 @@ input Vote {
 }
 
 extend type Mutation {
-    vote(input: Vote!): VoteCounter!
+    vote(input: Vote!): VoteCounter! @isAuthenticated
 }

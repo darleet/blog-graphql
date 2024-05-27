@@ -39,6 +39,7 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	IsAuthenticated func(ctx context.Context, obj interface{}, next graphql.Resolver) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -546,9 +547,9 @@ extend type Query {
 }
 
 extend type Mutation {
-    createArticle(input: NewArticle!): Article!
-    updateArticle(input: UpdateArticle!): Article!
-    deleteArticle(id: ID!): Boolean!
+    createArticle(input: NewArticle!): Article! @isAuthenticated
+    updateArticle(input: UpdateArticle!): Article! @isAuthenticated
+    deleteArticle(id: ID!): Boolean! @isAuthenticated
 }
 `, BuiltIn: false},
 	{Name: "../../../../api/comment.graphql", Input: `type Comment {
@@ -575,13 +576,13 @@ extend type Query {
 }
 
 extend type Mutation {
-    createComment(input: NewComment!): Comment!
-    updateComment(input: UpdateComment): Comment!
-    deleteComment(id: ID!): Boolean!
+    createComment(input: NewComment!): Comment! @isAuthenticated
+    updateComment(input: UpdateComment): Comment! @isAuthenticated
+    deleteComment(id: ID!): Boolean! @isAuthenticated
 }
 
 extend type Subscription {
-    newComment(articleID: ID!): Comment!
+    newComment(articleID: ID!): Comment! @isAuthenticated
 }`, BuiltIn: false},
 	{Name: "../../../../api/schema.graphql", Input: `schema {
     query: Query
@@ -603,6 +604,8 @@ type Query
 type Mutation
 
 type Subscription
+
+directive @isAuthenticated on FIELD_DEFINITION
 `, BuiltIn: false},
 	{Name: "../../../../api/user.graphql", Input: `scalar URL
 scalar Email
@@ -645,7 +648,7 @@ input Vote {
 }
 
 extend type Mutation {
-    vote(input: Vote!): VoteCounter!
+    vote(input: Vote!): VoteCounter! @isAuthenticated
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

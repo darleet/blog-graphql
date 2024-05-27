@@ -22,11 +22,11 @@ extend type Query {
 }
 
 extend type Mutation {
-    createComment(input: NewComment!): Comment!
-    updateComment(input: UpdateComment): Comment!
-    deleteComment(id: ID!): Boolean!
+    createComment(input: NewComment!): Comment! @isAuthenticated
+    updateComment(input: UpdateComment): Comment! @isAuthenticated
+    deleteComment(id: ID!): Boolean! @isAuthenticated
 }
 
 extend type Subscription {
-    newComment(articleID: ID!): Comment!
+    newComment(articleID: ID!): Comment! @isAuthenticated
 }

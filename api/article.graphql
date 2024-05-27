@@ -27,7 +27,7 @@ extend type Query {
 }
 
 extend type Mutation {
-    createArticle(input: NewArticle!): Article!
-    updateArticle(input: UpdateArticle!): Article!
-    deleteArticle(id: ID!): Boolean!
+    createArticle(input: NewArticle!): Article! @isAuthenticated
+    updateArticle(input: UpdateArticle!): Article! @isAuthenticated
+    deleteArticle(id: ID!): Boolean! @isAuthenticated
 }
