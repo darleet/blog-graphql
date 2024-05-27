@@ -22,7 +22,7 @@ func (r *mutationResolver) UpdateComment(ctx context.Context, input *model.Updat
 }
 
 // DeleteComment is the resolver for the deleteComment field.
-func (r *mutationResolver) DeleteComment(ctx context.Context, input string) (bool, error) {
+func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, error) {
 	panic(fmt.Errorf("not implemented: DeleteComment - deleteComment"))
 }
 

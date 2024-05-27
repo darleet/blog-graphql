@@ -24,7 +24,7 @@ extend type Query {
 extend type Mutation {
     createComment(input: NewComment!): Comment!
     updateComment(input: UpdateComment): Comment!
-    deleteComment(input: ID!): Boolean!
+    deleteComment(id: ID!): Boolean!
 }
 
 extend type Subscription {

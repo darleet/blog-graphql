@@ -25,7 +25,7 @@ type MutationResolver interface {
 	DeleteArticle(ctx context.Context, id string) (bool, error)
 	CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error)
 	UpdateComment(ctx context.Context, input *model.UpdateComment) (*model.Comment, error)
-	DeleteComment(ctx context.Context, input string) (bool, error)
+	DeleteComment(ctx context.Context, id string) (bool, error)
 	Login(ctx context.Context, input model.LoginInput) (bool, error)
 	Register(ctx context.Context, input model.RegisterInput) (bool, error)
 	Vote(ctx context.Context, input model.Vote) (*model.VoteCounter, error)
@@ -92,14 +92,14 @@ func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Contex
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -637,7 +637,7 @@ func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteComment(rctx, fc.Args["input"].(string))
+		return ec.resolvers.Mutation().DeleteComment(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
