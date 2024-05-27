@@ -27,8 +27,8 @@ func main() {
 	repo := local.NewRepository()
 
 	articles := article.NewUsecase(repo)
-	comments := comment.NewUsecase(nil)
-	votes := vote.NewUsecase(nil)
+	comments := comment.NewUsecase(repo)
+	votes := vote.NewUsecase(repo)
 
 	res := resolver.NewRootResolvers(articles, comments, nil, votes)
 	srv := handler.NewDefaultServer(runtime.NewExecutableSchema(res))
