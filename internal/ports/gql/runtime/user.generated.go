@@ -320,6 +320,10 @@ func (ec *executionContext) unmarshalNRegisterInput2githubᚗcomᚋdarleetᚋblo
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNUser2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+	return ec._User(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {

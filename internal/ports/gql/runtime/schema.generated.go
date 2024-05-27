@@ -33,7 +33,6 @@ type MutationResolver interface {
 type QueryResolver interface {
 	ArticlesList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
 	Article(ctx context.Context, articleID string) (*model.Article, error)
-	CommentsList(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
 }
 type SubscriptionResolver interface {
 	NewComment(ctx context.Context, articleID string) (<-chan *model.Comment, error)
@@ -232,39 +231,6 @@ func (ec *executionContext) field_Query_articlesList_args(ctx context.Context, r
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_commentsList_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["articleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("articleID"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["articleID"] = arg0
-	var arg1 *string
-	if tmp, ok := rawArgs["after"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["after"] = arg1
-	var arg2 *model.Sort
-	if tmp, ok := rawArgs["sort"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sort"))
-		arg2, err = ec.unmarshalOSort2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐSort(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["sort"] = arg2
-	return args, nil
-}
-
 func (ec *executionContext) field_Subscription_newComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -361,6 +327,8 @@ func (ec *executionContext) fieldContext_Mutation_createArticle(ctx context.Cont
 				return ec.fieldContext_Article_votes(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Article_createdAt(ctx, field)
+			case "comments":
+				return ec.fieldContext_Article_comments(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Article", field.Name)
 		},
@@ -452,6 +420,8 @@ func (ec *executionContext) fieldContext_Mutation_updateArticle(ctx context.Cont
 				return ec.fieldContext_Article_votes(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Article_createdAt(ctx, field)
+			case "comments":
+				return ec.fieldContext_Article_comments(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Article", field.Name)
 		},
@@ -1037,6 +1007,8 @@ func (ec *executionContext) fieldContext_Query_articlesList(ctx context.Context,
 				return ec.fieldContext_Article_votes(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Article_createdAt(ctx, field)
+			case "comments":
+				return ec.fieldContext_Article_comments(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Article", field.Name)
 		},
@@ -1105,6 +1077,8 @@ func (ec *executionContext) fieldContext_Query_article(ctx context.Context, fiel
 				return ec.fieldContext_Article_votes(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Article_createdAt(ctx, field)
+			case "comments":
+				return ec.fieldContext_Article_comments(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Article", field.Name)
 		},
@@ -1117,72 +1091,6 @@ func (ec *executionContext) fieldContext_Query_article(ctx context.Context, fiel
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_article_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_commentsList(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_commentsList(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().CommentsList(rctx, fc.Args["articleID"].(string), fc.Args["after"].(*string), fc.Args["sort"].(*model.Sort))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Comment)
-	fc.Result = res
-	return ec.marshalOComment2ᚕᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐCommentᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_commentsList(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Comment_id(ctx, field)
-			case "content":
-				return ec.fieldContext_Comment_content(ctx, field)
-			case "author":
-				return ec.fieldContext_Comment_author(ctx, field)
-			case "votes":
-				return ec.fieldContext_Comment_votes(ctx, field)
-			case "replies":
-				return ec.fieldContext_Comment_replies(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Comment_createdAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Comment", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_commentsList_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1586,25 +1494,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_article(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "commentsList":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_commentsList(ctx, field)
 				return res
 			}
 

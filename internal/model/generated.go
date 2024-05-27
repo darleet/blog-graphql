@@ -6,27 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 )
-
-type Article struct {
-	ID        string    `json:"id"`
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	Author    *User     `json:"author"`
-	IsClosed  bool      `json:"isClosed"`
-	Votes     int       `json:"votes"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-type Comment struct {
-	ID        string     `json:"id"`
-	Content   string     `json:"content"`
-	Author    *User      `json:"author"`
-	Votes     int        `json:"votes"`
-	Replies   []*Comment `json:"replies,omitempty"`
-	CreatedAt time.Time  `json:"createdAt"`
-}
 
 type LoginInput struct {
 	Login    string `json:"login"`
@@ -43,8 +23,9 @@ type NewArticle struct {
 }
 
 type NewComment struct {
-	Content  string  `json:"content"`
-	ParentID *string `json:"parentID,omitempty"`
+	ArticleID string  `json:"articleID"`
+	Content   string  `json:"content"`
+	ParentID  *string `json:"parentID,omitempty"`
 }
 
 type Query struct {

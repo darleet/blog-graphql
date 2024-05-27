@@ -8,6 +8,7 @@ type Comment {
 }
 
 input NewComment {
+    articleID: ID!
     content: String!
     parentID: ID
 }
@@ -15,10 +16,6 @@ input NewComment {
 input UpdateComment {
     id: ID!
     content: String # is nullable due to other fields may be added
-}
-
-extend type Query {
-    commentsList(articleID: ID!, after: String, sort: Sort = NEW_DESC): [Comment!]
 }
 
 extend type Mutation {

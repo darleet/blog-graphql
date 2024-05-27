@@ -18,11 +18,21 @@ type ArticleUsecase interface {
 	Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error)
 	Delete(ctx context.Context, id string) (bool, error)
 	GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
-	GetByID(ctx context.Context, articleID string) (*model.Article, error)
+	GetArticle(ctx context.Context, articleID string) (*model.Article, error)
+	GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
+}
+
+type CommentUsecase interface {
+	Create(ctx context.Context, articleID string, input model.NewComment) (*model.Comment, error)
+	Update(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
+	Delete(ctx context.Context, id string) (bool, error)
+	GetList(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
+	Subscribe(ctx context.Context, articleID string) (<-chan *model.Comment, error)
 }
 
 type Resolver struct {
 	articles ArticleUsecase
+	comments CommentUsecase
 }
 
 func NewRootResolvers(articles ArticleUsecase) runtime.Config {

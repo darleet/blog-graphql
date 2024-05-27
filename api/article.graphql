@@ -6,6 +6,7 @@ type Article {
     isClosed: Boolean!
     votes: Int!
     createdAt: Time!
+    comments(after: String, sort: Sort = NEW_DESC): [Comment!]
 }
 
 input NewArticle {
@@ -22,7 +23,9 @@ input UpdateArticle {
 }
 
 extend type Query {
+    # cursor-based pagination for articles
     articlesList(after: String, sort: Sort = NEW_DESC): [Article!]
+    # cursor-based pagination for comments
     article(articleID: ID!): Article
 }
 

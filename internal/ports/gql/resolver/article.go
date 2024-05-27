@@ -6,8 +6,21 @@ package resolver
 
 import (
 	"context"
+	"fmt"
+
 	"github.com/darleet/blog-graphql/internal/model"
+	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
 )
+
+// Author is the resolver for the author field.
+func (r *articleResolver) Author(ctx context.Context, obj *model.Article) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: Author - author"))
+}
+
+// Comments is the resolver for the comments field.
+func (r *articleResolver) Comments(ctx context.Context, obj *model.Article, after *string, sort *model.Sort) ([]*model.Comment, error) {
+	panic(fmt.Errorf("not implemented: Comments - comments"))
+}
 
 // CreateArticle is the resolver for the createArticle field.
 func (r *mutationResolver) CreateArticle(ctx context.Context, input model.NewArticle) (*model.Article, error) {
@@ -31,5 +44,10 @@ func (r *queryResolver) ArticlesList(ctx context.Context, after *string, sort *m
 
 // Article is the resolver for the article field.
 func (r *queryResolver) Article(ctx context.Context, articleID string) (*model.Article, error) {
-	return r.articles.GetByID(ctx, articleID)
+	return r.articles.GetArticle(ctx, articleID)
 }
+
+// Article returns runtime.ArticleResolver implementation.
+func (r *Resolver) Article() runtime.ArticleResolver { return &articleResolver{r} }
+
+type articleResolver struct{ *Resolver }

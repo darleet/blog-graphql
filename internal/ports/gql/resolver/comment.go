@@ -9,7 +9,18 @@ import (
 	"fmt"
 
 	"github.com/darleet/blog-graphql/internal/model"
+	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
 )
+
+// Author is the resolver for the author field.
+func (r *commentResolver) Author(ctx context.Context, obj *model.Comment) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: Author - author"))
+}
+
+// Replies is the resolver for the replies field.
+func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment) ([]*model.Comment, error) {
+	panic(fmt.Errorf("not implemented: Replies - replies"))
+}
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error) {
@@ -26,12 +37,12 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, 
 	panic(fmt.Errorf("not implemented: DeleteComment - deleteComment"))
 }
 
-// CommentsList is the resolver for the commentsList field.
-func (r *queryResolver) CommentsList(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error) {
-	panic(fmt.Errorf("not implemented: CommentsList - commentsList"))
-}
-
 // NewComment is the resolver for the newComment field.
 func (r *subscriptionResolver) NewComment(ctx context.Context, articleID string) (<-chan *model.Comment, error) {
 	panic(fmt.Errorf("not implemented: NewComment - newComment"))
 }
+
+// Comment returns runtime.CommentResolver implementation.
+func (r *Resolver) Comment() runtime.CommentResolver { return &commentResolver{r} }
+
+type commentResolver struct{ *Resolver }

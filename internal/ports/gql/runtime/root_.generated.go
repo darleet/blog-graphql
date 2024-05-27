@@ -33,6 +33,8 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Article() ArticleResolver
+	Comment() CommentResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 	Subscription() SubscriptionResolver
@@ -45,6 +47,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Article struct {
 		Author    func(childComplexity int) int
+		Comments  func(childComplexity int, after *string, sort *model.Sort) int
 		Content   func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
@@ -77,7 +80,6 @@ type ComplexityRoot struct {
 	Query struct {
 		Article      func(childComplexity int, articleID string) int
 		ArticlesList func(childComplexity int, after *string, sort *model.Sort) int
-		CommentsList func(childComplexity int, articleID string, after *string, sort *model.Sort) int
 	}
 
 	Subscription struct {
@@ -120,6 +122,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Article.Author(childComplexity), true
+
+	case "Article.comments":
+		if e.complexity.Article.Comments == nil {
+			break
+		}
+
+		args, err := ec.field_Article_comments_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Article.Comments(childComplexity, args["after"].(*string), args["sort"].(*model.Sort)), true
 
 	case "Article.content":
 		if e.complexity.Article.Content == nil {
@@ -337,18 +351,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ArticlesList(childComplexity, args["after"].(*string), args["sort"].(*model.Sort)), true
 
-	case "Query.commentsList":
-		if e.complexity.Query.CommentsList == nil {
-			break
-		}
-
-		args, err := ec.field_Query_commentsList_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.CommentsList(childComplexity, args["articleID"].(string), args["after"].(*string), args["sort"].(*model.Sort)), true
-
 	case "Subscription.newComment":
 		if e.complexity.Subscription.NewComment == nil {
 			break
@@ -526,6 +528,7 @@ var sources = []*ast.Source{
     isClosed: Boolean!
     votes: Int!
     createdAt: Time!
+    comments(after: String, sort: Sort = NEW_DESC): [Comment!]
 }
 
 input NewArticle {
@@ -542,7 +545,9 @@ input UpdateArticle {
 }
 
 extend type Query {
+    # cursor-based pagination for articles
     articlesList(after: String, sort: Sort = NEW_DESC): [Article!]
+    # cursor-based pagination for comments
     article(articleID: ID!): Article
 }
 
@@ -562,6 +567,7 @@ extend type Mutation {
 }
 
 input NewComment {
+    articleID: ID!
     content: String!
     parentID: ID
 }
@@ -569,10 +575,6 @@ input NewComment {
 input UpdateComment {
     id: ID!
     content: String # is nullable due to other fields may be added
-}
-
-extend type Query {
-    commentsList(articleID: ID!, after: String, sort: Sort = NEW_DESC): [Comment!]
 }
 
 extend type Mutation {

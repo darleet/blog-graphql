@@ -25,3 +25,7 @@ models:
     model: github.com/darleet/blog-graphql/internal/model.URL
   Email:
     model: github.com/darleet/blog-graphql/internal/model.Email
+  Article:
+    model: github.com/darleet/blog-graphql/internal/model.Article
+  Comment:
+    model: github.com/darleet/blog-graphql/internal/model.Comment
