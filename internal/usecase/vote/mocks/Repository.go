@@ -14,32 +14,8 @@ type Repository struct {
 	mock.Mock
 }
 
-// GetUserVote provides a mock function with given fields: ctx, userID, articleID
-func (_m *Repository) GetUserVote(ctx context.Context, userID string, articleID string) (model.VoteValue, error) {
-	ret := _m.Called(ctx, userID, articleID)
-
-	var r0 model.VoteValue
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) (model.VoteValue, error)); ok {
-		return rf(ctx, userID, articleID)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) model.VoteValue); ok {
-		r0 = rf(ctx, userID, articleID)
-	} else {
-		r0 = ret.Get(0).(model.VoteValue)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
-		r1 = rf(ctx, userID, articleID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetVotes provides a mock function with given fields: ctx, articleID
-func (_m *Repository) GetVotes(ctx context.Context, articleID string) (int, error) {
+// GetArticleVotes provides a mock function with given fields: ctx, articleID
+func (_m *Repository) GetArticleVotes(ctx context.Context, articleID string) (int, error) {
 	ret := _m.Called(ctx, articleID)
 
 	var r0 int
@@ -62,13 +38,37 @@ func (_m *Repository) GetVotes(ctx context.Context, articleID string) (int, erro
 	return r0, r1
 }
 
-// InsertVote provides a mock function with given fields: ctx, userID, value
-func (_m *Repository) InsertVote(ctx context.Context, userID string, value model.Vote) error {
-	ret := _m.Called(ctx, userID, value)
+// GetCommentVotes provides a mock function with given fields: ctx, commentID
+func (_m *Repository) GetCommentVotes(ctx context.Context, commentID string) (int, error) {
+	ret := _m.Called(ctx, commentID)
+
+	var r0 int
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (int, error)); ok {
+		return rf(ctx, commentID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) int); ok {
+		r0 = rf(ctx, commentID)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, commentID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// SetArticleVote provides a mock function with given fields: ctx, userID, input
+func (_m *Repository) SetArticleVote(ctx context.Context, userID string, input model.VoteArticle) error {
+	ret := _m.Called(ctx, userID, input)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, model.Vote) error); ok {
-		r0 = rf(ctx, userID, value)
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteArticle) error); ok {
+		r0 = rf(ctx, userID, input)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -76,13 +76,13 @@ func (_m *Repository) InsertVote(ctx context.Context, userID string, value model
 	return r0
 }
 
-// SetVote provides a mock function with given fields: ctx, userID, value
-func (_m *Repository) SetVote(ctx context.Context, userID string, value model.Vote) error {
-	ret := _m.Called(ctx, userID, value)
+// SetCommentVote provides a mock function with given fields: ctx, userID, input
+func (_m *Repository) SetCommentVote(ctx context.Context, userID string, input model.VoteComment) error {
+	ret := _m.Called(ctx, userID, input)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, model.Vote) error); ok {
-		r0 = rf(ctx, userID, value)
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteComment) error); ok {
+		r0 = rf(ctx, userID, input)
 	} else {
 		r0 = ret.Error(0)
 	}

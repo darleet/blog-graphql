@@ -27,16 +27,10 @@ func (s *VoteTestSuite) SetupSuite() {
 	s.uc = NewUsecase(s.repo)
 }
 
-func (s *VoteTestSuite) TestProcessVoteInsert() {
-	s.repo.On("GetUserVote", mock.Anything,
+func (s *VoteTestSuite) TestVoteArticleInsert() {
+	s.repo.On("SetArticleVote", mock.Anything,
 		mock.AnythingOfType("string"),
-		mock.AnythingOfType("string")).
-		Return(model.VoteValueNone, errors.NotFound).
-		Once()
-
-	s.repo.On("InsertVote", mock.Anything,
-		mock.AnythingOfType("string"),
-		mock.AnythingOfType("model.Vote")).
+		mock.AnythingOfType("model.VoteArticle")).
 		Return(nil).
 		Once()
 
@@ -46,7 +40,7 @@ func (s *VoteTestSuite) TestProcessVoteInsert() {
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
-	got, err := s.uc.VoteArticle(ctx, model.Vote{
+	got, err := s.uc.VoteArticle(ctx, model.VoteArticle{
 		ArticleID: "1234",
 		Value:     model.VoteValueUp,
 	})
@@ -54,16 +48,10 @@ func (s *VoteTestSuite) TestProcessVoteInsert() {
 	require.Equal(s.T(), 1, got)
 }
 
-func (s *VoteTestSuite) TestProcessVoteUpdate() {
-	s.repo.On("GetUserVote", mock.Anything,
+func (s *VoteTestSuite) TestVoteArticleUpdate() {
+	s.repo.On("SetArticleVote", mock.Anything,
 		mock.AnythingOfType("string"),
-		mock.AnythingOfType("string")).
-		Return(model.VoteValueUp, nil).
-		Once()
-
-	s.repo.On("SetVote", mock.Anything,
-		mock.AnythingOfType("string"),
-		mock.AnythingOfType("model.Vote")).
+		mock.AnythingOfType("model.VoteArticle")).
 		Return(nil).
 		Once()
 
@@ -73,7 +61,7 @@ func (s *VoteTestSuite) TestProcessVoteUpdate() {
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
-	got, err := s.uc.VoteArticle(ctx, model.Vote{
+	got, err := s.uc.VoteArticle(ctx, model.VoteArticle{
 		ArticleID: "1234",
 		Value:     model.VoteValueDown,
 	})
@@ -81,9 +69,60 @@ func (s *VoteTestSuite) TestProcessVoteUpdate() {
 	require.Equal(s.T(), -1, got)
 }
 
-func (s *VoteTestSuite) TestProcessVoteNoID() {
-	got, err := s.uc.VoteArticle(context.Background(), model.Vote{
+func (s *VoteTestSuite) TestVoteArticleNoID() {
+	got, err := s.uc.VoteArticle(context.Background(), model.VoteArticle{
 		ArticleID: "1234",
+		Value:     model.VoteValueUp,
+	})
+	require.ErrorIs(s.T(), err, errors.Unauthorized)
+	require.Equal(s.T(), 0, got)
+}
+
+func (s *VoteTestSuite) TestVoteCommentInsert() {
+	s.repo.On("SetCommentVote", mock.Anything,
+		mock.AnythingOfType("string"),
+		mock.AnythingOfType("model.VoteComment")).
+		Return(nil).
+		Once()
+
+	s.repo.On("GetCommentVotes", mock.Anything,
+		mock.AnythingOfType("string")).
+		Return(1, nil).
+		Once()
+
+	ctx := utils.SetUserID(context.Background(), "4321")
+	got, err := s.uc.VoteComment(ctx, model.VoteComment{
+		CommentID: "1234",
+		Value:     model.VoteValueUp,
+	})
+	require.NoError(s.T(), err)
+	require.Equal(s.T(), 1, got)
+}
+
+func (s *VoteTestSuite) TestVoteCommentUpdate() {
+	s.repo.On("SetCommentVote", mock.Anything,
+		mock.AnythingOfType("string"),
+		mock.AnythingOfType("model.VoteComment")).
+		Return(nil).
+		Once()
+
+	s.repo.On("GetCommentVotes", mock.Anything,
+		mock.AnythingOfType("string")).
+		Return(-1, nil).
+		Once()
+
+	ctx := utils.SetUserID(context.Background(), "4321")
+	got, err := s.uc.VoteComment(ctx, model.VoteComment{
+		CommentID: "1234",
+		Value:     model.VoteValueDown,
+	})
+	require.NoError(s.T(), err)
+	require.Equal(s.T(), -1, got)
+}
+
+func (s *VoteTestSuite) TestVoteCommentNoID() {
+	got, err := s.uc.VoteComment(context.Background(), model.VoteComment{
+		CommentID: "1234",
 		Value:     model.VoteValueUp,
 	})
 	require.ErrorIs(s.T(), err, errors.Unauthorized)
