@@ -8,16 +8,16 @@ import (
 // Middleware is a simple middleware that puts the userID from cookies in the context
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := r.Cookie("user-id")
+		c := r.Header.Get("User-ID")
 
 		// Allow unauthenticated users in
-		if err != nil || c == nil {
+		if c == "" {
 			next.ServeHTTP(w, r)
 			return
 		}
 
 		// put userID in context
-		ctx := utils.SetUserID(r.Context(), c.Value)
+		ctx := utils.SetUserID(r.Context(), c)
 
 		// and call the next with our new context
 		r = r.WithContext(ctx)
