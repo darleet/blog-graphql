@@ -7,8 +7,9 @@ import (
 	"github.com/darleet/blog-graphql/pkg/utils"
 )
 
+//go:generate mockery --name=Repository
 type Repository interface {
-	Create(ctx context.Context, input model.NewComment) (*model.Comment, error)
+	Create(ctx context.Context, userID string, input model.NewComment) (*model.Comment, error)
 	Update(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
 	Delete(ctx context.Context, id string) (bool, error)
 	GetReplies(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
@@ -33,7 +34,7 @@ func (uc *Usecase) Create(ctx context.Context, input model.NewComment) (*model.C
 	if userID == "" {
 		return nil, errors.NewUnauthorizedError("ArticleUsecase.Create: unauthenticated, userID is empty")
 	}
-	comment, err := uc.repo.Create(ctx, input)
+	comment, err := uc.repo.Create(ctx, userID, input)
 	if err != nil {
 		return nil, err
 	}
