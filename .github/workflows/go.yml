@@ -30,7 +30,7 @@ jobs:
       - name: Test
         run: |
           go mod tidy
-          go test -v -race -coverpkg=./... ./...
+          go test -v -race -covermode atomic -coverprofile=covprofile -coverpkg=./... ./...
 
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2.3.0
