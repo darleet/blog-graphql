@@ -6,6 +6,7 @@ package resolver
 
 import (
 	"context"
+
 	"github.com/darleet/blog-graphql/internal/model"
 	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
 )
@@ -13,6 +14,11 @@ import (
 // Author is the resolver for the author field.
 func (r *commentResolver) Author(ctx context.Context, obj *model.Comment) (*model.User, error) {
 	return r.users.GetUser(ctx, obj.UserID)
+}
+
+// Votes is the resolver for the votes field.
+func (r *commentResolver) Votes(ctx context.Context, obj *model.Comment) (int, error) {
+	return r.votes.GetVotes(ctx, obj.ID)
 }
 
 // Replies is the resolver for the replies field.

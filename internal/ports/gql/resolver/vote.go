@@ -6,12 +6,11 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/darleet/blog-graphql/internal/model"
 )
 
 // Vote is the resolver for the vote field.
-func (r *mutationResolver) Vote(ctx context.Context, input model.Vote) (*model.VoteCounter, error) {
-	panic(fmt.Errorf("not implemented: Vote - vote"))
+func (r *mutationResolver) Vote(ctx context.Context, input model.Vote) (int, error) {
+	return r.votes.ProcessVote(ctx, input)
 }

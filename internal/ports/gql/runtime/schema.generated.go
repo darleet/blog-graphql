@@ -28,7 +28,7 @@ type MutationResolver interface {
 	DeleteComment(ctx context.Context, id string) (bool, error)
 	Login(ctx context.Context, input model.LoginInput) (bool, error)
 	Register(ctx context.Context, input model.RegisterInput) (bool, error)
-	Vote(ctx context.Context, input model.Vote) (*model.VoteCounter, error)
+	Vote(ctx context.Context, input model.Vote) (int, error)
 }
 type QueryResolver interface {
 	ArticlesList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
@@ -909,10 +909,10 @@ func (ec *executionContext) _Mutation_vote(ctx context.Context, field graphql.Co
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(*model.VoteCounter); ok {
+		if data, ok := tmp.(int); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/darleet/blog-graphql/internal/model.VoteCounter`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -924,9 +924,9 @@ func (ec *executionContext) _Mutation_vote(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.VoteCounter)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNVoteCounter2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVoteCounter(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_vote(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -936,11 +936,7 @@ func (ec *executionContext) fieldContext_Mutation_vote(ctx context.Context, fiel
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "value":
-				return ec.fieldContext_VoteCounter_value(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type VoteCounter", field.Name)
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	defer func() {

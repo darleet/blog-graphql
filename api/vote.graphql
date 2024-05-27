@@ -1,7 +1,3 @@
-type VoteCounter {
-    value: Int!
-}
-
 enum VoteValue {
     NONE # used for canceling vote
     UP # +1 to votes
@@ -14,5 +10,5 @@ input Vote {
 }
 
 extend type Mutation {
-    vote(input: Vote!): VoteCounter! @isAuthenticated
+    vote(input: Vote!): Int! @isAuthenticated
 }

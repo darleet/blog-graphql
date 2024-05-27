@@ -4,9 +4,6 @@ package runtime
 
 import (
 	"context"
-	"errors"
-	"strconv"
-	"sync/atomic"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/darleet/blog-graphql/internal/model"
@@ -26,50 +23,6 @@ import (
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
-
-func (ec *executionContext) _VoteCounter_value(ctx context.Context, field graphql.CollectedField, obj *model.VoteCounter) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_VoteCounter_value(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Value, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_VoteCounter_value(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "VoteCounter",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
 
 // endregion **************************** field.gotpl *****************************
 
@@ -117,45 +70,6 @@ func (ec *executionContext) unmarshalInputVote(ctx context.Context, obj interfac
 
 // region    **************************** object.gotpl ****************************
 
-var voteCounterImplementors = []string{"VoteCounter"}
-
-func (ec *executionContext) _VoteCounter(ctx context.Context, sel ast.SelectionSet, obj *model.VoteCounter) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, voteCounterImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("VoteCounter")
-		case "value":
-			out.Values[i] = ec._VoteCounter_value(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
@@ -163,20 +77,6 @@ func (ec *executionContext) _VoteCounter(ctx context.Context, sel ast.SelectionS
 func (ec *executionContext) unmarshalNVote2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVote(ctx context.Context, v interface{}) (model.Vote, error) {
 	res, err := ec.unmarshalInputVote(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNVoteCounter2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVoteCounter(ctx context.Context, sel ast.SelectionSet, v model.VoteCounter) graphql.Marshaler {
-	return ec._VoteCounter(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNVoteCounter2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVoteCounter(ctx context.Context, sel ast.SelectionSet, v *model.VoteCounter) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._VoteCounter(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNVoteValue2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐVoteValue(ctx context.Context, v interface{}) (model.VoteValue, error) {

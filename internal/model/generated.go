@@ -64,10 +64,6 @@ type Vote struct {
 	Value     VoteValue `json:"value"`
 }
 
-type VoteCounter struct {
-	Value int `json:"value"`
-}
-
 type Sort string
 
 const (

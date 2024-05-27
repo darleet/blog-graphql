@@ -8,6 +8,5 @@ type Article struct {
 	Content   string    `json:"content"`
 	UserID    string    `json:"-"`
 	IsClosed  bool      `json:"isClosed"`
-	Votes     int       `json:"votes"`
 	CreatedAt time.Time `json:"createdAt"`
 }

@@ -34,18 +34,26 @@ type UserUsecase interface {
 	GetUser(ctx context.Context, userID string) (*model.User, error)
 }
 
+type VoteUsecase interface {
+	GetVotes(ctx context.Context, articleID string) (int, error)
+	ProcessVote(ctx context.Context, input model.Vote) (int, error)
+}
+
 type Resolver struct {
 	articles ArticleUsecase
 	comments CommentUsecase
 	users    UserUsecase
+	votes    VoteUsecase
 }
 
-func NewRootResolvers(articles ArticleUsecase, comments CommentUsecase, users UserUsecase) runtime.Config {
+func NewRootResolvers(articles ArticleUsecase, comments CommentUsecase, users UserUsecase,
+	votes VoteUsecase) runtime.Config {
 	c := runtime.Config{
 		Resolvers: &Resolver{
 			articles: articles,
 			comments: comments,
 			users:    users,
+			votes:    votes,
 		},
 	}
 

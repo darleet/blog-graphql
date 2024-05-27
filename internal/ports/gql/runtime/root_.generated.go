@@ -91,10 +91,6 @@ type ComplexityRoot struct {
 		ID        func(childComplexity int) int
 		Username  func(childComplexity int) int
 	}
-
-	VoteCounter struct {
-		Value func(childComplexity int) int
-	}
 }
 
 type executableSchema struct {
@@ -389,13 +385,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Username(childComplexity), true
 
-	case "VoteCounter.value":
-		if e.complexity.VoteCounter.Value == nil {
-			break
-		}
-
-		return e.complexity.VoteCounter.Value(childComplexity), true
-
 	}
 	return 0, false
 }
@@ -639,11 +628,7 @@ extend type Mutation {
     login(input: LoginInput!): Boolean!
     register(input: RegisterInput!): Boolean!
 }`, BuiltIn: false},
-	{Name: "../../../../api/vote.graphql", Input: `type VoteCounter {
-    value: Int!
-}
-
-enum VoteValue {
+	{Name: "../../../../api/vote.graphql", Input: `enum VoteValue {
     NONE # used for canceling vote
     UP # +1 to votes
     DOWN # -1 to votes
@@ -655,7 +640,7 @@ input Vote {
 }
 
 extend type Mutation {
-    vote(input: Vote!): VoteCounter! @isAuthenticated
+    vote(input: Vote!): Int! @isAuthenticated
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
