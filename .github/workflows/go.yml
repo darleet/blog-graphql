@@ -30,7 +30,7 @@ jobs:
       - name: Test
         run: |
           go mod tidy
-          go test -v -race -covermode atomic -coverprofile=covprofile -coverpkg=./... ./...
+          go test -v -race -covermode atomic -coverprofile=cover `go list ./... | grep -v ./internal/ports/gql/runtime`  
 
       - name: Install goveralls
         run: go install github.com/mattn/goveralls@latest
@@ -38,5 +38,5 @@ jobs:
       - name: Send coverage
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: goveralls -coverprofile=covprofile -service=github
+        run: goveralls -coverprofile=cover -service=github
 
