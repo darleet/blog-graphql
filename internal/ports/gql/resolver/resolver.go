@@ -30,15 +30,22 @@ type CommentUsecase interface {
 	Subscribe(ctx context.Context, articleID string) (<-chan *model.Comment, error)
 }
 
+type UserUsecase interface {
+	GetUser(ctx context.Context, userID string) (*model.User, error)
+}
+
 type Resolver struct {
 	articles ArticleUsecase
 	comments CommentUsecase
+	users    UserUsecase
 }
 
-func NewRootResolvers(articles ArticleUsecase) runtime.Config {
+func NewRootResolvers(articles ArticleUsecase, comments CommentUsecase, users UserUsecase) runtime.Config {
 	c := runtime.Config{
 		Resolvers: &Resolver{
 			articles: articles,
+			comments: comments,
+			users:    users,
 		},
 	}
 

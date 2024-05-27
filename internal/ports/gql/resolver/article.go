@@ -6,15 +6,13 @@ package resolver
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/darleet/blog-graphql/internal/model"
 	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
 )
 
 // Author is the resolver for the author field.
 func (r *articleResolver) Author(ctx context.Context, obj *model.Article) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: Author - author"))
+	return r.users.GetUser(ctx, obj.UserID)
 }
 
 // Comments is the resolver for the comments field.
