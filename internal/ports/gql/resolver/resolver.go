@@ -18,7 +18,7 @@ type ArticleUsecase interface {
 	Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error)
 	Delete(ctx context.Context, id string) (bool, error)
 	GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
-	GetArticle(ctx context.Context, articleID string) (*model.Article, error)
+	Get(ctx context.Context, articleID string) (*model.Article, error)
 	GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
 }
 

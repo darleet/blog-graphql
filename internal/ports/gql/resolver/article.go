@@ -47,7 +47,7 @@ func (r *queryResolver) ArticlesList(ctx context.Context, after *string, sort *m
 
 // Article is the resolver for the article field.
 func (r *queryResolver) Article(ctx context.Context, articleID string) (*model.Article, error) {
-	return r.articles.GetArticle(ctx, articleID)
+	return r.articles.Get(ctx, articleID)
 }
 
 // Article returns runtime.ArticleResolver implementation.

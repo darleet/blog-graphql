@@ -81,7 +81,7 @@ func (s *ArticleTestSuite) TestUpdate() {
 		IsClosed: &isClosed,
 	}
 
-	s.repo.On("GetByID", mock.Anything,
+	s.repo.On("Get", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(article, nil)
 
@@ -107,7 +107,7 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 		IsClosed: &isClosed,
 	}
 
-	s.repo.On("GetByID", mock.Anything,
+	s.repo.On("Get", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(article, nil)
 
@@ -118,7 +118,7 @@ func (s *ArticleTestSuite) TestUpdateWrongAuthor() {
 }
 
 func (s *ArticleTestSuite) TestDelete() {
-	s.repo.On("GetByID", mock.Anything,
+	s.repo.On("Get", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(article, nil)
 
@@ -133,7 +133,7 @@ func (s *ArticleTestSuite) TestDelete() {
 }
 
 func (s *ArticleTestSuite) TestDeleteWrongAuthor() {
-	s.repo.On("GetByID", mock.Anything,
+	s.repo.On("Get", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(article, nil)
 
@@ -155,11 +155,11 @@ func (s *ArticleTestSuite) TestGetList() {
 }
 
 func (s *ArticleTestSuite) TestGetByID() {
-	s.repo.On("GetByID", mock.Anything,
+	s.repo.On("Get", mock.Anything,
 		mock.AnythingOfType("string")).
 		Return(article, nil)
 
-	got, err := s.uc.GetByID(context.Background(), "1234")
+	got, err := s.uc.GetArticle(context.Background(), "1234")
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), article, got)
 }

@@ -14,7 +14,8 @@ type Repository interface {
 	Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error)
 	Delete(ctx context.Context, id string) (bool, error)
 	GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error)
-	GetByID(ctx context.Context, articleID string) (*model.Article, error)
+	Get(ctx context.Context, articleID string) (*model.Article, error)
+	GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
 }
 
 type Usecase struct {
@@ -27,40 +28,45 @@ func NewUsecase(repo Repository) *Usecase {
 	}
 }
 
-func (a *Usecase) Create(ctx context.Context, input model.NewArticle) (*model.Article, error) {
+func (uc *Usecase) Create(ctx context.Context, input model.NewArticle) (*model.Article, error) {
 	userID := utils.GetUserID(ctx)
 	if userID == "" {
 		return nil, errors.NewUnauthorizedError("ArticleUsecase.Create: unauthenticated, userID is empty")
 	}
-	return a.repo.Create(ctx, userID, input)
+	return uc.repo.Create(ctx, userID, input)
 }
 
-func (a *Usecase) Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error) {
-	isAuthor, err := a.IsAuthor(ctx, input.ID)
+func (uc *Usecase) Update(ctx context.Context, input model.UpdateArticle) (*model.Article, error) {
+	isAuthor, err := uc.IsAuthor(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}
 	if !isAuthor {
 		return nil, errors.NewForbiddenError("ArticleUsecase.Update: you are not the author of this article")
 	}
-	return a.repo.Update(ctx, input)
+	return uc.repo.Update(ctx, input)
 }
 
-func (a *Usecase) Delete(ctx context.Context, id string) (bool, error) {
-	isAuthor, err := a.IsAuthor(ctx, id)
+func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
+	isAuthor, err := uc.IsAuthor(ctx, id)
 	if err != nil {
 		return false, err
 	}
 	if !isAuthor {
 		return false, errors.NewForbiddenError("ArticleUsecase.Delete: you are not the author of this article")
 	}
-	return a.repo.Delete(ctx, id)
+	return uc.repo.Delete(ctx, id)
 }
 
-func (a *Usecase) GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
-	return a.repo.GetList(ctx, after, sort)
+func (uc *Usecase) GetList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
+	return uc.repo.GetList(ctx, after, sort)
 }
 
-func (a *Usecase) GetByID(ctx context.Context, articleID string) (*model.Article, error) {
-	return a.repo.GetByID(ctx, articleID)
+func (uc *Usecase) Get(ctx context.Context, articleID string) (*model.Article, error) {
+	return uc.repo.Get(ctx, articleID)
+}
+
+func (uc *Usecase) GetComments(ctx context.Context, articleID string, after *string,
+	sort *model.Sort) ([]*model.Comment, error) {
+	return uc.repo.GetComments(ctx, articleID, after, sort)
 }
