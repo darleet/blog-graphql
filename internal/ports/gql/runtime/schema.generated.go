@@ -35,7 +35,7 @@ type QueryResolver interface {
 	Article(ctx context.Context, articleID string) (*model.Article, error)
 }
 type SubscriptionResolver interface {
-	NewComment(ctx context.Context, articleID string) (<-chan *model.Comment, error)
+	ListenComments(ctx context.Context, articleID string) (<-chan *model.Comment, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -231,7 +231,7 @@ func (ec *executionContext) field_Query_articlesList_args(ctx context.Context, r
 	return args, nil
 }
 
-func (ec *executionContext) field_Subscription_newComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Subscription_listenComments_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1226,8 +1226,8 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Subscription_newComment(ctx context.Context, field graphql.CollectedField) (ret func(ctx context.Context) graphql.Marshaler) {
-	fc, err := ec.fieldContext_Subscription_newComment(ctx, field)
+func (ec *executionContext) _Subscription_listenComments(ctx context.Context, field graphql.CollectedField) (ret func(ctx context.Context) graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subscription_listenComments(ctx, field)
 	if err != nil {
 		return nil
 	}
@@ -1241,7 +1241,7 @@ func (ec *executionContext) _Subscription_newComment(ctx context.Context, field 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Subscription().NewComment(rctx, fc.Args["articleID"].(string))
+			return ec.resolvers.Subscription().ListenComments(rctx, fc.Args["articleID"].(string))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.IsAuthenticated == nil {
@@ -1291,7 +1291,7 @@ func (ec *executionContext) _Subscription_newComment(ctx context.Context, field 
 	}
 }
 
-func (ec *executionContext) fieldContext_Subscription_newComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Subscription_listenComments(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Subscription",
 		Field:      field,
@@ -1322,7 +1322,7 @@ func (ec *executionContext) fieldContext_Subscription_newComment(ctx context.Con
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Subscription_newComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Subscription_listenComments_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1547,8 +1547,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	}
 
 	switch fields[0].Name {
-	case "newComment":
-		return ec._Subscription_newComment(ctx, fields[0])
+	case "listenComments":
+		return ec._Subscription_listenComments(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}

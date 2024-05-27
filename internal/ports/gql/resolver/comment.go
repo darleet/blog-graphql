@@ -37,9 +37,9 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, 
 	panic(fmt.Errorf("not implemented: DeleteComment - deleteComment"))
 }
 
-// NewComment is the resolver for the newComment field.
-func (r *subscriptionResolver) NewComment(ctx context.Context, articleID string) (<-chan *model.Comment, error) {
-	panic(fmt.Errorf("not implemented: NewComment - newComment"))
+// ListenComments is the resolver for the listenComments field.
+func (r *subscriptionResolver) ListenComments(ctx context.Context, articleID string) (<-chan *model.Comment, error) {
+	panic(fmt.Errorf("not implemented: ListenComments - listenComments"))
 }
 
 // Comment returns runtime.CommentResolver implementation.

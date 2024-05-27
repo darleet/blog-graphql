@@ -83,7 +83,7 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
-		NewComment func(childComplexity int, articleID string) int
+		ListenComments func(childComplexity int, articleID string) int
 	}
 
 	User struct {
@@ -351,17 +351,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ArticlesList(childComplexity, args["after"].(*string), args["sort"].(*model.Sort)), true
 
-	case "Subscription.newComment":
-		if e.complexity.Subscription.NewComment == nil {
+	case "Subscription.listenComments":
+		if e.complexity.Subscription.ListenComments == nil {
 			break
 		}
 
-		args, err := ec.field_Subscription_newComment_args(context.TODO(), rawArgs)
+		args, err := ec.field_Subscription_listenComments_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Subscription.NewComment(childComplexity, args["articleID"].(string)), true
+		return e.complexity.Subscription.ListenComments(childComplexity, args["articleID"].(string)), true
 
 	case "User.avatarURL":
 		if e.complexity.User.AvatarURL == nil {
@@ -584,7 +584,7 @@ extend type Mutation {
 }
 
 extend type Subscription {
-    newComment(articleID: ID!): Comment! @isAuthenticated
+    listenComments(articleID: ID!): Comment! @isAuthenticated
 }`, BuiltIn: false},
 	{Name: "../../../../api/schema.graphql", Input: `schema {
     query: Query

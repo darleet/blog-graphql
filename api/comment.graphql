@@ -25,5 +25,5 @@ extend type Mutation {
 }
 
 extend type Subscription {
-    newComment(articleID: ID!): Comment! @isAuthenticated
+    listenComments(articleID: ID!): Comment! @isAuthenticated
 }
