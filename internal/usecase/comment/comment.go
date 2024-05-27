@@ -1,0 +1,80 @@
+package comment
+
+import (
+	"context"
+	"github.com/darleet/blog-graphql/internal/model"
+	"github.com/darleet/blog-graphql/pkg/errors"
+	"github.com/darleet/blog-graphql/pkg/utils"
+)
+
+type Repository interface {
+	Create(ctx context.Context, input model.NewComment) (*model.Comment, error)
+	Update(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
+	Delete(ctx context.Context, id string) (bool, error)
+	GetReplies(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
+	GetAuthorID(ctx context.Context, id string) (string, error)
+}
+
+type Usecase struct {
+	repo Repository
+	sub  map[string][]chan *model.Comment
+}
+
+func NewUsecase(repo Repository) *Usecase {
+	sub := make(map[string][]chan *model.Comment)
+	return &Usecase{
+		repo: repo,
+		sub:  sub,
+	}
+}
+
+func (uc *Usecase) Create(ctx context.Context, input model.NewComment) (*model.Comment, error) {
+	userID := utils.GetUserID(ctx)
+	if userID == "" {
+		return nil, errors.NewUnauthorizedError("ArticleUsecase.Create: unauthenticated, userID is empty")
+	}
+	comment, err := uc.repo.Create(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	for _, c := range uc.sub[input.ArticleID] {
+		c <- comment
+	}
+	return comment, nil
+}
+
+func (uc *Usecase) Update(ctx context.Context, input model.UpdateComment) (*model.Comment, error) {
+	isAuthor, err := uc.IsAuthor(ctx, input.ID)
+	if err != nil {
+		return nil, err
+	}
+	if !isAuthor {
+		return nil, errors.NewForbiddenError("CommentUsecase.Update: you are not the author of this comment")
+	}
+	return uc.repo.Update(ctx, input)
+}
+
+func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
+	isAuthor, err := uc.IsAuthor(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	if !isAuthor {
+		return false, errors.NewForbiddenError("CommentUsecase.Delete: you are not the author of this comment")
+	}
+	return uc.repo.Delete(ctx, id)
+}
+
+func (uc *Usecase) GetReplies(ctx context.Context, articleID string, after *string,
+	sort *model.Sort) ([]*model.Comment, error) {
+	return uc.repo.GetReplies(ctx, articleID, after, sort)
+}
+
+func (uc *Usecase) Subscribe(ctx context.Context, articleID string) (<-chan *model.Comment, error) {
+	c := make(chan *model.Comment, 1)
+	if _, ok := uc.sub[articleID]; !ok {
+		uc.sub[articleID] = make([]chan *model.Comment, 0)
+	}
+	uc.sub[articleID] = append(uc.sub[articleID], c)
+	return c, nil
+}
