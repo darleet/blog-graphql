@@ -45,5 +45,8 @@ func (uc *Usecase) ProcessVote(ctx context.Context, input model.Vote) (int, erro
 		err = uc.repo.SetVote(ctx, userID, input)
 	}
 
+	if err != nil {
+		return 0, err
+	}
 	return uc.repo.GetVotes(ctx, input.ArticleID)
 }
