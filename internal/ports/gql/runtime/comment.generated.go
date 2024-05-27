@@ -587,6 +587,11 @@ func (ec *executionContext) unmarshalNNewComment2githubᚗcomᚋdarleetᚋblog�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNUpdateComment2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐUpdateComment(ctx context.Context, v interface{}) (model.UpdateComment, error) {
+	res, err := ec.unmarshalInputUpdateComment(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalOComment2ᚕᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐCommentᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Comment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -632,14 +637,6 @@ func (ec *executionContext) marshalOComment2ᚕᚖgithubᚗcomᚋdarleetᚋblog�
 	}
 
 	return ret
-}
-
-func (ec *executionContext) unmarshalOUpdateComment2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐUpdateComment(ctx context.Context, v interface{}) (*model.UpdateComment, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputUpdateComment(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************

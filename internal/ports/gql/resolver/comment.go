@@ -19,27 +19,27 @@ func (r *commentResolver) Author(ctx context.Context, obj *model.Comment) (*mode
 
 // Replies is the resolver for the replies field.
 func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, after *string, sort *model.Sort) ([]*model.Comment, error) {
-	panic(fmt.Errorf("not implemented: Replies - replies"))
+	return r.comments.GetReplies(ctx, obj.ID, after, sort)
 }
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error) {
-	panic(fmt.Errorf("not implemented: CreateComment - createComment"))
+	return r.comments.Create(ctx, input)
 }
 
 // UpdateComment is the resolver for the updateComment field.
-func (r *mutationResolver) UpdateComment(ctx context.Context, input *model.UpdateComment) (*model.Comment, error) {
-	panic(fmt.Errorf("not implemented: UpdateComment - updateComment"))
+func (r *mutationResolver) UpdateComment(ctx context.Context, input model.UpdateComment) (*model.Comment, error) {
+	return r.comments.Update(ctx, input)
 }
 
 // DeleteComment is the resolver for the deleteComment field.
 func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteComment - deleteComment"))
+	return r.comments.Delete(ctx, id)
 }
 
 // ListenComments is the resolver for the listenComments field.
 func (r *subscriptionResolver) ListenComments(ctx context.Context, articleID string) (<-chan *model.Comment, error) {
-	panic(fmt.Errorf("not implemented: ListenComments - listenComments"))
+	return r.comments.Subscribe(ctx, articleID)
 }
 
 // Comment returns runtime.CommentResolver implementation.

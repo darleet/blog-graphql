@@ -24,7 +24,7 @@ type MutationResolver interface {
 	UpdateArticle(ctx context.Context, input model.UpdateArticle) (*model.Article, error)
 	DeleteArticle(ctx context.Context, id string) (bool, error)
 	CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error)
-	UpdateComment(ctx context.Context, input *model.UpdateComment) (*model.Comment, error)
+	UpdateComment(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
 	DeleteComment(ctx context.Context, id string) (bool, error)
 	Login(ctx context.Context, input model.LoginInput) (bool, error)
 	Register(ctx context.Context, input model.RegisterInput) (bool, error)
@@ -150,10 +150,10 @@ func (ec *executionContext) field_Mutation_updateArticle_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *model.UpdateComment
+	var arg0 model.UpdateComment
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOUpdateComment2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐUpdateComment(ctx, tmp)
+		arg0, err = ec.unmarshalNUpdateComment2githubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐUpdateComment(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -619,7 +619,7 @@ func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field g
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().UpdateComment(rctx, fc.Args["input"].(*model.UpdateComment))
+			return ec.resolvers.Mutation().UpdateComment(rctx, fc.Args["input"].(model.UpdateComment))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.IsAuthenticated == nil {

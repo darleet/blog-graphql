@@ -73,7 +73,7 @@ type ComplexityRoot struct {
 		Login         func(childComplexity int, input model.LoginInput) int
 		Register      func(childComplexity int, input model.RegisterInput) int
 		UpdateArticle func(childComplexity int, input model.UpdateArticle) int
-		UpdateComment func(childComplexity int, input *model.UpdateComment) int
+		UpdateComment func(childComplexity int, input model.UpdateComment) int
 		Vote          func(childComplexity int, input model.Vote) int
 	}
 
@@ -318,7 +318,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateComment(childComplexity, args["input"].(*model.UpdateComment)), true
+		return e.complexity.Mutation.UpdateComment(childComplexity, args["input"].(model.UpdateComment)), true
 
 	case "Mutation.vote":
 		if e.complexity.Mutation.Vote == nil {
@@ -584,7 +584,7 @@ input UpdateComment {
 
 extend type Mutation {
     createComment(input: NewComment!): Comment! @isAuthenticated
-    updateComment(input: UpdateComment): Comment! @isAuthenticated
+    updateComment(input: UpdateComment!): Comment! @isAuthenticated
     deleteComment(id: ID!): Boolean! @isAuthenticated
 }
 

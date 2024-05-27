@@ -20,7 +20,7 @@ input UpdateComment {
 
 extend type Mutation {
     createComment(input: NewComment!): Comment! @isAuthenticated
-    updateComment(input: UpdateComment): Comment! @isAuthenticated
+    updateComment(input: UpdateComment!): Comment! @isAuthenticated
     deleteComment(id: ID!): Boolean! @isAuthenticated
 }
 
