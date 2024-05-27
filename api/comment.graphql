@@ -3,7 +3,7 @@ type Comment {
     content: String!
     author: User!
     votes: Int!
-    replies: [Comment!]
+    replies(after: String, sort: Sort = NEW_DESC): [Comment!]
     createdAt: Time!
 }
 

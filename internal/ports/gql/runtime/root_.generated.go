@@ -61,7 +61,7 @@ type ComplexityRoot struct {
 		Content   func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
-		Replies   func(childComplexity int) int
+		Replies   func(childComplexity int, after *string, sort *model.Sort) int
 		Votes     func(childComplexity int) int
 	}
 
@@ -210,7 +210,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Comment.Replies(childComplexity), true
+		args, err := ec.field_Comment_replies_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Comment.Replies(childComplexity, args["after"].(*string), args["sort"].(*model.Sort)), true
 
 	case "Comment.votes":
 		if e.complexity.Comment.Votes == nil {
@@ -562,7 +567,7 @@ extend type Mutation {
     content: String!
     author: User!
     votes: Int!
-    replies: [Comment!]
+    replies(after: String, sort: Sort = NEW_DESC): [Comment!]
     createdAt: Time!
 }
 

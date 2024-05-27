@@ -21,12 +21,36 @@ import (
 type CommentResolver interface {
 	Author(ctx context.Context, obj *model.Comment) (*model.User, error)
 
-	Replies(ctx context.Context, obj *model.Comment) ([]*model.Comment, error)
+	Replies(ctx context.Context, obj *model.Comment, after *string, sort *model.Sort) ([]*model.Comment, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Comment_replies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *model.Sort
+	if tmp, ok := rawArgs["sort"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sort"))
+		arg1, err = ec.unmarshalOSort2ᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐSort(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sort"] = arg1
+	return args, nil
+}
 
 // endregion ***************************** args.gotpl *****************************
 
@@ -234,7 +258,7 @@ func (ec *executionContext) _Comment_replies(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Comment().Replies(rctx, obj)
+		return ec.resolvers.Comment().Replies(rctx, obj, fc.Args["after"].(*string), fc.Args["sort"].(*model.Sort))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -248,7 +272,7 @@ func (ec *executionContext) _Comment_replies(ctx context.Context, field graphql.
 	return ec.marshalOComment2ᚕᚖgithubᚗcomᚋdarleetᚋblogᚑgraphqlᚋinternalᚋmodelᚐCommentᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Comment_replies(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Comment_replies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Comment",
 		Field:      field,
@@ -271,6 +295,17 @@ func (ec *executionContext) fieldContext_Comment_replies(_ context.Context, fiel
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Comment", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Comment_replies_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }

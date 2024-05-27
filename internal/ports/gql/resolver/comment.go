@@ -18,7 +18,7 @@ func (r *commentResolver) Author(ctx context.Context, obj *model.Comment) (*mode
 }
 
 // Replies is the resolver for the replies field.
-func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment) ([]*model.Comment, error) {
+func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, after *string, sort *model.Sort) ([]*model.Comment, error) {
 	panic(fmt.Errorf("not implemented: Replies - replies"))
 }
 
