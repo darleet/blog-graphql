@@ -11,8 +11,8 @@ import (
 type Repository interface {
 	GetArticleVotes(ctx context.Context, articleID string) (int, error)
 	GetCommentVotes(ctx context.Context, commentID string) (int, error)
-	SetArticleVote(ctx context.Context, userID string, value model.VoteArticle) error
-	SetCommentVote(ctx context.Context, userID string, value model.VoteComment) error
+	SetArticleVote(ctx context.Context, userID string, input model.VoteArticle) error
+	SetCommentVote(ctx context.Context, userID string, input model.VoteComment) error
 }
 
 type Usecase struct {
