@@ -14,15 +14,11 @@ import (
 )
 
 var article = &model.Article{
-	ID:      "1234",
-	Title:   "Test Article",
-	Content: "Some test article",
-	Author: &model.User{
-		ID:       "4321",
-		Username: "username",
-	},
+	ID:        "1234",
+	Title:     "Test Article",
+	Content:   "Some test article",
+	UserID:    "4321",
 	IsClosed:  false,
-	Votes:     0,
 	CreatedAt: time.Now(),
 }
 
@@ -159,7 +155,7 @@ func (s *ArticleTestSuite) TestGetByID() {
 		mock.AnythingOfType("string")).
 		Return(article, nil)
 
-	got, err := s.uc.GetArticle(context.Background(), "1234")
+	got, err := s.uc.Get(context.Background(), "1234")
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), article, got)
 }

@@ -64,8 +64,8 @@ func (_m *Repository) Delete(ctx context.Context, id string) (bool, error) {
 	return r0, r1
 }
 
-// GetByID provides a mock function with given fields: ctx, articleID
-func (_m *Repository) GetByID(ctx context.Context, articleID string) (*model.Article, error) {
+// Get provides a mock function with given fields: ctx, articleID
+func (_m *Repository) Get(ctx context.Context, articleID string) (*model.Article, error) {
 	ret := _m.Called(ctx, articleID)
 
 	var r0 *model.Article
@@ -83,6 +83,32 @@ func (_m *Repository) GetByID(ctx context.Context, articleID string) (*model.Art
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
 		r1 = rf(ctx, articleID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetComments provides a mock function with given fields: ctx, articleID, after, sort
+func (_m *Repository) GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error) {
+	ret := _m.Called(ctx, articleID, after, sort)
+
+	var r0 []*model.Comment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, *string, *model.Sort) ([]*model.Comment, error)); ok {
+		return rf(ctx, articleID, after, sort)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, *string, *model.Sort) []*model.Comment); ok {
+		r0 = rf(ctx, articleID, after, sort)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.Comment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, *string, *model.Sort) error); ok {
+		r1 = rf(ctx, articleID, after, sort)
 	} else {
 		r1 = ret.Error(1)
 	}
