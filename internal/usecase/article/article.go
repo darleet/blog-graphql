@@ -41,7 +41,7 @@ func (a *Usecase) Update(ctx context.Context, input model.UpdateArticle) (*model
 		return nil, err
 	}
 	if !isAuthor {
-		return nil, errors.NewForbiddenError("you are not the author of this article")
+		return nil, errors.NewForbiddenError("ArticleUsecase.Update: you are not the author of this article")
 	}
 	return a.repo.Update(ctx, input)
 }
@@ -52,7 +52,7 @@ func (a *Usecase) Delete(ctx context.Context, id string) (bool, error) {
 		return false, err
 	}
 	if !isAuthor {
-		return false, errors.NewForbiddenError("you are not the author of this article")
+		return false, errors.NewForbiddenError("ArticleUsecase.Delete: you are not the author of this article")
 	}
 	return a.repo.Delete(ctx, id)
 }
