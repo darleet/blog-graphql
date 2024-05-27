@@ -31,3 +31,7 @@ jobs:
         run: |
           go mod tidy
           go test -v -race -coverpkg=./... ./...
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.3.0
+
