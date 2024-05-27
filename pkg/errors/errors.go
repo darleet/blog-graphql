@@ -19,11 +19,12 @@ type RestErr interface {
 	Status() int
 	Error() string
 	Causes() interface{}
+	Unwrap() error
 }
 
 type RestError struct {
 	ErrStatus int         `json:"status,omitempty"`
-	ErrError  string      `json:"error,omitempty"`
+	ErrError  error       `json:"error,omitempty"`
 	ErrCauses interface{} `json:"-"`
 }
 
@@ -39,7 +40,11 @@ func (e RestError) Causes() interface{} {
 	return e.ErrCauses
 }
 
-func NewRestError(status int, err string, causes interface{}) RestErr {
+func (e RestError) Unwrap() error {
+	return e.ErrError
+}
+
+func NewRestError(status int, err error, causes interface{}) RestErr {
 	return RestError{
 		ErrStatus: status,
 		ErrError:  err,
@@ -50,7 +55,7 @@ func NewRestError(status int, err string, causes interface{}) RestErr {
 func NewBadRequestError(causes interface{}) RestErr {
 	return RestError{
 		ErrStatus: http.StatusBadRequest,
-		ErrError:  BadRequest.Error(),
+		ErrError:  BadRequest,
 		ErrCauses: causes,
 	}
 }
@@ -58,7 +63,7 @@ func NewBadRequestError(causes interface{}) RestErr {
 func NewNotFoundError(causes interface{}) RestErr {
 	return RestError{
 		ErrStatus: http.StatusNotFound,
-		ErrError:  NotFound.Error(),
+		ErrError:  NotFound,
 		ErrCauses: causes,
 	}
 }
@@ -66,7 +71,7 @@ func NewNotFoundError(causes interface{}) RestErr {
 func NewConflictError(causes interface{}) RestErr {
 	return RestError{
 		ErrStatus: http.StatusConflict,
-		ErrError:  Conflict.Error(),
+		ErrError:  Conflict,
 		ErrCauses: causes,
 	}
 }
@@ -74,7 +79,7 @@ func NewConflictError(causes interface{}) RestErr {
 func NewForbiddenError(causes interface{}) RestErr {
 	return RestError{
 		ErrStatus: http.StatusForbidden,
-		ErrError:  Forbidden.Error(),
+		ErrError:  Forbidden,
 		ErrCauses: causes,
 	}
 }
@@ -82,7 +87,7 @@ func NewForbiddenError(causes interface{}) RestErr {
 func NewUnauthorizedError(causes interface{}) RestErr {
 	return RestError{
 		ErrStatus: http.StatusUnauthorized,
-		ErrError:  Unauthorized.Error(),
+		ErrError:  Unauthorized,
 		ErrCauses: causes,
 	}
 }
@@ -90,7 +95,7 @@ func NewUnauthorizedError(causes interface{}) RestErr {
 func NewInternalServerError(causes interface{}) RestErr {
 	return RestError{
 		ErrStatus: http.StatusInternalServerError,
-		ErrError:  InternalServerError.Error(),
+		ErrError:  InternalServerError,
 		ErrCauses: causes,
 	}
 }
