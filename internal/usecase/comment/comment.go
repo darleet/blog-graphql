@@ -12,7 +12,7 @@ type Repository interface {
 	CreateComment(ctx context.Context, userID string, input model.NewComment) (*model.Comment, error)
 	UpdateComment(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
 	DeleteComment(ctx context.Context, id string) (bool, error)
-	GetReplies(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error)
+	GetReplies(ctx context.Context, commentID string, after *string, sort *model.Sort) ([]*model.Comment, error)
 	GetCommentAuthorID(ctx context.Context, id string) (string, error)
 }
 
@@ -66,9 +66,9 @@ func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
 	return uc.repo.DeleteComment(ctx, id)
 }
 
-func (uc *Usecase) GetReplies(ctx context.Context, articleID string, after *string,
+func (uc *Usecase) GetReplies(ctx context.Context, commentID string, after *string,
 	sort *model.Sort) ([]*model.Comment, error) {
-	return uc.repo.GetReplies(ctx, articleID, after, sort)
+	return uc.repo.GetReplies(ctx, commentID, after, sort)
 }
 
 func (uc *Usecase) Subscribe(ctx context.Context, articleID string) (<-chan *model.Comment, error) {

@@ -171,6 +171,7 @@ func (r *Repository) GetComments(ctx context.Context, articleID string, after *s
 	if !ok {
 		return nil, errors.NewNotFoundError("ArticleRepository.GetComments: article not found")
 	}
+
 	var cursor uint64
 	if after != nil {
 		cursor, err = strconv.ParseUint(*after, 10, 64)
@@ -178,12 +179,12 @@ func (r *Repository) GetComments(ctx context.Context, articleID string, after *s
 			return nil, errors.NewBadRequestError("ArticleRepository.GetComments: invalid after")
 		}
 	}
+
 	comments := make([]*schema.Comment, 0)
 	for _, v := range article.Comments {
-		if v < cursor {
-			continue
+		if v > cursor {
+			comments = append(comments, r.comments[v])
 		}
-		comments = append(comments, r.comments[v])
 	}
 
 	if sort != nil {

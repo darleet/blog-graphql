@@ -16,7 +16,9 @@ type Repository struct {
 
 func NewRepository() *Repository {
 	return &Repository{
-		articles: make(map[uint64]*schema.Article),
-		comments: make(map[uint64]*schema.Comment),
+		articles:       make(map[uint64]*schema.Article),
+		comments:       make(map[uint64]*schema.Comment),
+		serialArticles: 1,
+		serialComments: 1,
 	}
 }
