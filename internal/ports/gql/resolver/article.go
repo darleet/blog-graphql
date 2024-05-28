@@ -81,7 +81,7 @@ func (r *mutationResolver) DeleteArticle(ctx context.Context, id string) (bool, 
 
 // ArticlesList is the resolver for the articlesList field.
 func (r *queryResolver) ArticlesList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
-	article, err := r.articles.GetList(ctx, after, sort)
+	articles, err := r.articles.GetList(ctx, after, sort)
 	if err != nil {
 		r.log.Error(err)
 	}
@@ -89,7 +89,7 @@ func (r *queryResolver) ArticlesList(ctx context.Context, after *string, sort *m
 		"after", after,
 		"sort", sort,
 	)
-	return article, err
+	return articles, err
 }
 
 // Article is the resolver for the article field.
