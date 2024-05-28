@@ -5,6 +5,7 @@ import (
 	"github.com/darleet/blog-graphql/internal/model"
 	"github.com/darleet/blog-graphql/pkg/errors"
 	"github.com/darleet/blog-graphql/pkg/utils"
+	"sync"
 )
 
 //go:generate mockery --name=Repository
@@ -19,6 +20,7 @@ type Repository interface {
 
 type Usecase struct {
 	repo Repository
+	mu   sync.RWMutex
 	sub  map[string][]chan *model.Comment
 }
 
@@ -51,6 +53,8 @@ func (uc *Usecase) Create(ctx context.Context, input model.NewComment) (*model.C
 	}
 
 	go func() {
+		uc.mu.RLock()
+		defer uc.mu.RUnlock()
 		for _, c := range uc.sub[input.ArticleID] {
 			c <- comment
 		}
@@ -90,6 +94,8 @@ func (uc *Usecase) GetReplies(ctx context.Context, commentID string, after *stri
 
 func (uc *Usecase) Subscribe(ctx context.Context, articleID string) (<-chan *model.Comment, error) {
 	c := make(chan *model.Comment, 1)
+	uc.mu.Lock()
+	defer uc.mu.Unlock()
 	if _, ok := uc.sub[articleID]; !ok {
 		uc.sub[articleID] = make([]chan *model.Comment, 0)
 	}
