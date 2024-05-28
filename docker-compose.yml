@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    shm_size: 128mb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "8081:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U docker -d blog" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    env_file:
+      - .env
+    networks:
+      - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    env_file:
+      - .env
+    networks:
+      - postgres
+
+volumes:
+  db-data:
+
+networks:
+  postgres:
+    driver: bridge
