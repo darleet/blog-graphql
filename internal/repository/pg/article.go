@@ -39,7 +39,7 @@ func (r *Repository) UpdateArticle(ctx context.Context, input model.UpdateArticl
 	`
 
 	var a model.Article
-	err := r.pool.QueryRow(ctx, q, input.Title, input.Content, input.IsClosed).
+	err := r.pool.QueryRow(ctx, q, input.Title, input.Content, input.IsClosed, input.ID).
 		Scan(&a.Title, &a.Content, &a.IsClosed, &a.CreatedAt, &a.Votes, &a.UserID)
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return nil, errors.NewNotFoundError(fmt.Errorf("ArticleRepository.UpdateArticle: %w", err))
@@ -73,12 +73,17 @@ func (r *Repository) GetArticlesList(ctx context.Context, after *string, sort *m
 		LEFT JOIN articles_votes c ON a.id = c.article_id
 		WHERE a.id > $1
 		GROUP BY a.id, a.created_at
-		ORDER BY CASE WHEN $2 = 'NEW_DESC' THEN a.created_at END DESC,
-				 CASE WHEN $2 = 'NEW_ASC' THEN a.created_at END,
-				 CASE WHEN $2 = 'TOP_ASC' THEN vote_sum END DESC,
-				 CASE WHEN $2 = 'TOP_DESC' THEN vote_sum END
+		ORDER BY CASE WHEN $2 = 'NEW_DESC' THEN a.created_at END DESC ,
+		         CASE WHEN $2 = 'NEW_ASC' THEN a.created_at END,
+				 CASE WHEN $2 = 'TOP_DESC' THEN COALESCE(SUM(c.value), 0) END DESC,
+				 CASE WHEN $2 = 'TOP_ASC' THEN COALESCE(SUM(c.value), 0) END
 		LIMIT $3
 	`
+
+	if after == nil {
+		after = new(string)
+		*after = "0"
+	}
 
 	var articles []*model.Article
 	rows, err := r.pool.Query(ctx, query, after, sort, ArticleLimit)
@@ -145,17 +150,22 @@ func (r *Repository) GetComments(ctx context.Context, articleID string, after *s
 			COALESCE(SUM(v.value), 0) AS vote_sum
 		FROM comments c
 		LEFT JOIN comments_votes v ON c.id = v.comment_id
-		WHERE c.article_id = $1
+		WHERE c.article_id = $1 AND c.id > $2
 		GROUP BY c.id, c.created_at
-		ORDER BY CASE WHEN $2 = 'NEW_DESC' THEN c.created_at END DESC,
-				 CASE WHEN $2 = 'NEW_ASC' THEN c.created_at END,
-				 CASE WHEN $2 = 'TOP_ASC' THEN vote_sum END DESC,
-				 CASE WHEN $2 = 'TOP_DESC' THEN vote_sum END
-		LIMIT $3
+		ORDER BY CASE WHEN $3 = 'NEW_DESC' THEN c.created_at END DESC,
+				 CASE WHEN $3 = 'NEW_ASC' THEN c.created_at END,
+				 CASE WHEN $3 = 'TOP_DESC' THEN COALESCE(SUM(v.value), 0) END DESC,
+				 CASE WHEN $3 = 'TOP_ASC' THEN COALESCE(SUM(v.value), 0) END
+		LIMIT $4
 	`
 
+	if after == nil {
+		after = new(string)
+		*after = "0"
+	}
+
 	var comments []*model.Comment
-	rows, err := r.pool.Query(ctx, q, articleID, sort, CommentLimit)
+	rows, err := r.pool.Query(ctx, q, articleID, after, sort, CommentLimit)
 	if err != nil {
 		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.GetComments: %w", err))
 	}

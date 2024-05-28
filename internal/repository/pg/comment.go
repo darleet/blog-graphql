@@ -66,16 +66,22 @@ func (r *Repository) GetReplies(ctx context.Context, commentID string, after *st
 			COALESCE(SUM(v.value), 0) AS vote_sum
 		FROM comments c
 		LEFT JOIN comments_votes v ON c.id = v.comment_id
-		WHERE c.parent_id = $1
+		WHERE c.parent_id = $1 AND c.id > $2
 		GROUP BY c.id, c.created_at
-		ORDER BY CASE WHEN $2 = 'NEW_DESC' THEN c.created_at END DESC,
-		         CASE WHEN $2 = 'NEW_ASC' THEN c.created_at END,
-		         CASE WHEN $2 = 'VOTE_DESC' THEN vote_sum END DESC,
-		         CASE WHEN $2 = 'VOTE_ASC' THEN vote_sum END
+		ORDER BY CASE WHEN $3 = 'NEW_DESC' THEN c.created_at END DESC,
+		         CASE WHEN $3 = 'NEW_ASC' THEN c.created_at END,
+		         CASE WHEN $3 = 'VOTE_DESC' THEN COALESCE(SUM(v.value), 0) END DESC,
+		         CASE WHEN $3 = 'VOTE_ASC' THEN COALESCE(SUM(v.value), 0) END
+		LIMIT $4
 	`
 
+	if after == nil {
+		after = new(string)
+		*after = "0"
+	}
+
 	var c []*model.Comment
-	rows, err := r.pool.Query(ctx, q, commentID)
+	rows, err := r.pool.Query(ctx, q, commentID, after, sort, CommentLimit)
 
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return nil, errors.NewNotFoundError(fmt.Errorf("CommentRepository.GetReplies: %w", err))

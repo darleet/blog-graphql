@@ -32,7 +32,7 @@ func main() {
 		port = defaultPort
 	}
 
-	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
+	pool, err := pgxpool.New(context.Background(), os.Getenv("PG_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
