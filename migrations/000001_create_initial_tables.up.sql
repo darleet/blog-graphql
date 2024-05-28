@@ -40,6 +40,7 @@ CREATE TABLE articles_votes (
     id BIGSERIAL PRIMARY KEY,
     article_id BIGINT NOT NULL,
     author_id BIGINT NOT NULL,
+    value SMALLINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
@@ -49,6 +50,7 @@ CREATE TABLE comments_votes (
     id BIGSERIAL PRIMARY KEY,
     comment_id BIGINT NOT NULL,
     author_id BIGINT NOT NULL,
+    value SMALLINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
