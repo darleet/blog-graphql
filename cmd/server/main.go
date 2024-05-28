@@ -21,7 +21,7 @@ import (
 	"os"
 )
 
-const defaultPort = "8888"
+const defaultPort = "8080"
 
 func main() {
 	log := zap.Must(zap.NewDevelopment()).Sugar()

@@ -9,6 +9,7 @@ import (
 
 //go:generate mockery --name=Repository
 type Repository interface {
+	IsArticleClosed(ctx context.Context, id string) (bool, error)
 	CreateComment(ctx context.Context, userID string, input model.NewComment) (*model.Comment, error)
 	UpdateComment(ctx context.Context, input model.UpdateComment) (*model.Comment, error)
 	DeleteComment(ctx context.Context, id string) (bool, error)
@@ -34,13 +35,26 @@ func (uc *Usecase) Create(ctx context.Context, input model.NewComment) (*model.C
 	if userID == "" {
 		return nil, errors.NewUnauthorizedError("ArticleUsecase.CreateArticle: unauthenticated, userID is empty")
 	}
+
+	isClosed, err := uc.repo.IsArticleClosed(ctx, input.ArticleID)
+	if err != nil {
+		return nil, err
+	}
+	if isClosed {
+		return nil, errors.NewForbiddenError("CommentUsecase.CreateComment: article is closed")
+	}
+
 	comment, err := uc.repo.CreateComment(ctx, userID, input)
 	if err != nil {
 		return nil, err
 	}
-	for _, c := range uc.sub[input.ArticleID] {
-		c <- comment
-	}
+
+	go func() {
+		for _, c := range uc.sub[input.ArticleID] {
+			c <- comment
+		}
+	}()
+
 	return comment, nil
 }
 

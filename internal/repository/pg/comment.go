@@ -9,6 +9,21 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+func (r *Repository) IsArticleClosed(ctx context.Context, articleID string) (bool, error) {
+	q := `SELECT is_closed FROM articles WHERE id = $1`
+
+	var isClosed bool
+	err := r.pool.QueryRow(ctx, q, articleID).Scan(&isClosed)
+
+	if err != nil && errs.Is(err, pgx.ErrNoRows) {
+		return false, errors.NewNotFoundError(fmt.Errorf("CommentRepository.IsArticleClosed: %w", err))
+	} else if err != nil {
+		return false, errors.NewInternalServerError(fmt.Errorf("CommentRepository.IsArticleClosed: %w", err))
+	}
+
+	return isClosed, nil
+}
+
 func (r *Repository) CreateComment(ctx context.Context, userID string,
 	input model.NewComment) (*model.Comment, error) {
 	q := `
