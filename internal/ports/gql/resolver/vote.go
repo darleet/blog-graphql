@@ -6,16 +6,37 @@ package resolver
 
 import (
 	"context"
+	"github.com/darleet/blog-graphql/pkg/utils"
 
 	"github.com/darleet/blog-graphql/internal/model"
 )
 
 // VoteArticle is the resolver for the voteArticle field.
 func (r *mutationResolver) VoteArticle(ctx context.Context, input model.VoteArticle) (int, error) {
-	return r.votes.VoteArticle(ctx, input)
+	n, err := r.votes.VoteArticle(ctx, input)
+	if err != nil {
+		r.log.Error(err)
+	} else {
+		r.log.Infow("Article voted",
+			"articleID", input.ArticleID,
+			"userID", utils.GetUserID(ctx),
+			"vote", input.Value,
+		)
+	}
+	return n, err
 }
 
 // VoteComment is the resolver for the voteComment field.
 func (r *mutationResolver) VoteComment(ctx context.Context, input model.VoteComment) (int, error) {
-	return r.votes.VoteComment(ctx, input)
+	n, err := r.votes.VoteComment(ctx, input)
+	if err != nil {
+		r.log.Error(err)
+	} else {
+		r.log.Infow("Comment voted",
+			"commentID", input.CommentID,
+			"userID", utils.GetUserID(ctx),
+			"vote", input.Value,
+		)
+	}
+	return n, err
 }
