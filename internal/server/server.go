@@ -66,7 +66,9 @@ func (s *Server) resolverPG() http.Handler {
 	if err != nil {
 		s.log.Fatal(err)
 	}
-	repo := pg.NewRepository(nil)
+	s.log.Info("Postgres connected")
+
+	repo := pg.NewRepository(pool)
 	res := resolver.NewRootResolvers(
 		s.log,
 		article.NewUsecase(repo),
