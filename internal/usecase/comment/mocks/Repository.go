@@ -88,17 +88,17 @@ func (_m *Repository) GetCommentAuthorID(ctx context.Context, id string) (string
 	return r0, r1
 }
 
-// GetReplies provides a mock function with given fields: ctx, articleID, after, sort
-func (_m *Repository) GetReplies(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error) {
-	ret := _m.Called(ctx, articleID, after, sort)
+// GetReplies provides a mock function with given fields: ctx, commentID, after, sort
+func (_m *Repository) GetReplies(ctx context.Context, commentID string, after *string, sort *model.Sort) ([]*model.Comment, error) {
+	ret := _m.Called(ctx, commentID, after, sort)
 
 	var r0 []*model.Comment
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, *string, *model.Sort) ([]*model.Comment, error)); ok {
-		return rf(ctx, articleID, after, sort)
+		return rf(ctx, commentID, after, sort)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, *string, *model.Sort) []*model.Comment); ok {
-		r0 = rf(ctx, articleID, after, sort)
+		r0 = rf(ctx, commentID, after, sort)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*model.Comment)
@@ -106,7 +106,31 @@ func (_m *Repository) GetReplies(ctx context.Context, articleID string, after *s
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, *string, *model.Sort) error); ok {
-		r1 = rf(ctx, articleID, after, sort)
+		r1 = rf(ctx, commentID, after, sort)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// IsArticleClosed provides a mock function with given fields: ctx, id
+func (_m *Repository) IsArticleClosed(ctx context.Context, id string) (bool, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 bool
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (bool, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) bool); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
