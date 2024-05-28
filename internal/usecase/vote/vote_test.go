@@ -27,16 +27,11 @@ func (s *VoteTestSuite) SetupSuite() {
 	s.uc = NewUsecase(s.repo)
 }
 
-func (s *VoteTestSuite) TestVoteArticleInsert() {
+func (s *VoteTestSuite) TestVoteArticleUpvote() {
 	s.repo.On("SetArticleVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteArticle")).
-		Return(nil).
-		Once()
-
-	s.repo.On("GetArticleVotes", mock.Anything,
-		mock.AnythingOfType("string")).
-		Return(1, nil).
+		Return(1).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
@@ -48,16 +43,11 @@ func (s *VoteTestSuite) TestVoteArticleInsert() {
 	require.Equal(s.T(), 1, got)
 }
 
-func (s *VoteTestSuite) TestVoteArticleUpdate() {
+func (s *VoteTestSuite) TestVoteArticleDownvote() {
 	s.repo.On("SetArticleVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteArticle")).
-		Return(nil).
-		Once()
-
-	s.repo.On("GetArticleVotes", mock.Anything,
-		mock.AnythingOfType("string")).
-		Return(-1, nil).
+		Return(-1).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
@@ -78,16 +68,11 @@ func (s *VoteTestSuite) TestVoteArticleNoID() {
 	require.Equal(s.T(), 0, got)
 }
 
-func (s *VoteTestSuite) TestVoteCommentInsert() {
+func (s *VoteTestSuite) TestVoteCommentUpvote() {
 	s.repo.On("SetCommentVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteComment")).
-		Return(nil).
-		Once()
-
-	s.repo.On("GetCommentVotes", mock.Anything,
-		mock.AnythingOfType("string")).
-		Return(1, nil).
+		Return(1).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
@@ -99,16 +84,11 @@ func (s *VoteTestSuite) TestVoteCommentInsert() {
 	require.Equal(s.T(), 1, got)
 }
 
-func (s *VoteTestSuite) TestVoteCommentUpdate() {
+func (s *VoteTestSuite) TestVoteCommentDownvote() {
 	s.repo.On("SetCommentVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteComment")).
-		Return(nil).
-		Once()
-
-	s.repo.On("GetCommentVotes", mock.Anything,
-		mock.AnythingOfType("string")).
-		Return(-1, nil).
+		Return(-1).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")

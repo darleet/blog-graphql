@@ -7,34 +7,18 @@ import (
 	"strconv"
 )
 
-func (r *Repository) GetArticleVotes(ctx context.Context, articleID string) (int, error) {
-	u, err := strconv.ParseUint(articleID, 10, 64)
-	if err != nil {
-		return 0, errors.NewBadRequestError("VoteRepository.GetArticleVotes: invalid articleID")
-	}
-	return voteSum(r.articles[u].Votes), nil
-}
-
-func (r *Repository) GetCommentVotes(ctx context.Context, commentID string) (int, error) {
-	u, err := strconv.ParseUint(commentID, 10, 64)
-	if err != nil {
-		return 0, errors.NewBadRequestError("VoteRepository.GetCommentVotes: invalid commentID")
-	}
-	return voteSum(r.comments[u].Votes), nil
-}
-
-func (r *Repository) SetArticleVote(ctx context.Context, userID string, input model.VoteArticle) error {
+func (r *Repository) SetArticleVote(ctx context.Context, userID string, input model.VoteArticle) (int, error) {
 	u, err := strconv.ParseUint(userID, 10, 64)
 	if err != nil {
-		return errors.NewBadRequestError("VoteRepository.SetArticleVote: invalid userID")
+		return 0, errors.NewBadRequestError("VoteRepository.SetArticleVote: invalid userID")
 	}
 	a, err := strconv.ParseUint(input.ArticleID, 10, 64)
 	if err != nil {
-		return errors.NewBadRequestError("VoteRepository.SetArticleVote: invalid articleID")
+		return 0, errors.NewBadRequestError("VoteRepository.SetArticleVote: invalid articleID")
 	}
 	article, ok := r.articles[a]
 	if !ok {
-		return errors.NewNotFoundError("VoteRepository.SetArticleVote: vote not found")
+		return 0, errors.NewNotFoundError("VoteRepository.SetArticleVote: vote not found")
 	}
 	switch input.Value {
 	case model.VoteValueNone:
@@ -44,21 +28,21 @@ func (r *Repository) SetArticleVote(ctx context.Context, userID string, input mo
 	case model.VoteValueDown:
 		article.Votes[u] = -1
 	}
-	return nil
+	return article.Votes[u], nil
 }
 
-func (r *Repository) SetCommentVote(ctx context.Context, userID string, input model.VoteComment) error {
+func (r *Repository) SetCommentVote(ctx context.Context, userID string, input model.VoteComment) (int, error) {
 	u, err := strconv.ParseUint(userID, 10, 64)
 	if err != nil {
-		return errors.NewBadRequestError("VoteRepository.SetCommentVote: invalid userID")
+		return 0, errors.NewBadRequestError("VoteRepository.SetCommentVote: invalid userID")
 	}
 	c, err := strconv.ParseUint(input.CommentID, 10, 64)
 	if err != nil {
-		return errors.NewBadRequestError("VoteRepository.SetCommentVote: invalid commentID")
+		return 0, errors.NewBadRequestError("VoteRepository.SetCommentVote: invalid commentID")
 	}
 	comment, ok := r.comments[c]
 	if !ok {
-		return errors.NewNotFoundError("VoteRepository.SetCommentVote: vote not found")
+		return 0, errors.NewNotFoundError("VoteRepository.SetCommentVote: vote not found")
 	}
 	switch input.Value {
 	case model.VoteValueNone:
@@ -68,5 +52,5 @@ func (r *Repository) SetCommentVote(ctx context.Context, userID string, input mo
 	case model.VoteValueDown:
 		comment.Votes[u] = -1
 	}
-	return nil
+	return comment.Votes[u], nil
 }

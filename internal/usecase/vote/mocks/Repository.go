@@ -14,80 +14,52 @@ type Repository struct {
 	mock.Mock
 }
 
-// GetArticleVotes provides a mock function with given fields: ctx, articleID
-func (_m *Repository) GetArticleVotes(ctx context.Context, articleID string) (int, error) {
-	ret := _m.Called(ctx, articleID)
-
-	var r0 int
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (int, error)); ok {
-		return rf(ctx, articleID)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) int); ok {
-		r0 = rf(ctx, articleID)
-	} else {
-		r0 = ret.Get(0).(int)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, articleID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetCommentVotes provides a mock function with given fields: ctx, commentID
-func (_m *Repository) GetCommentVotes(ctx context.Context, commentID string) (int, error) {
-	ret := _m.Called(ctx, commentID)
-
-	var r0 int
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (int, error)); ok {
-		return rf(ctx, commentID)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) int); ok {
-		r0 = rf(ctx, commentID)
-	} else {
-		r0 = ret.Get(0).(int)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, commentID)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // SetArticleVote provides a mock function with given fields: ctx, userID, input
-func (_m *Repository) SetArticleVote(ctx context.Context, userID string, input model.VoteArticle) error {
+func (_m *Repository) SetArticleVote(ctx context.Context, userID string, input model.VoteArticle) (int, error) {
 	ret := _m.Called(ctx, userID, input)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteArticle) error); ok {
+	var r0 int
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteArticle) (int, error)); ok {
+		return rf(ctx, userID, input)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteArticle) int); ok {
 		r0 = rf(ctx, userID, input)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string, model.VoteArticle) error); ok {
+		r1 = rf(ctx, userID, input)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // SetCommentVote provides a mock function with given fields: ctx, userID, input
-func (_m *Repository) SetCommentVote(ctx context.Context, userID string, input model.VoteComment) error {
+func (_m *Repository) SetCommentVote(ctx context.Context, userID string, input model.VoteComment) (int, error) {
 	ret := _m.Called(ctx, userID, input)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteComment) error); ok {
+	var r0 int
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteComment) (int, error)); ok {
+		return rf(ctx, userID, input)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, model.VoteComment) int); ok {
 		r0 = rf(ctx, userID, input)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(context.Context, string, model.VoteComment) error); ok {
+		r1 = rf(ctx, userID, input)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // NewRepository creates a new instance of Repository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
