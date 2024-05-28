@@ -16,11 +16,12 @@ func (r *articleResolver) Author(ctx context.Context, obj *model.Article) (*mode
 	user, err := r.users.GetUser(ctx, obj.UserID)
 	if err != nil {
 		r.log.Error(err)
+	} else {
+		r.log.Infow("Got author for article",
+			"userID", obj.UserID,
+			"articleID", obj.ID,
+		)
 	}
-	r.log.Infow("Got author for article",
-		"userID", obj.UserID,
-		"articleID", obj.ID,
-	)
 	return user, err
 }
 
@@ -30,10 +31,11 @@ func (r *articleResolver) Comments(ctx context.Context, obj *model.Article, afte
 	comments, err := r.articles.GetComments(ctx, obj.ID, after, sort)
 	if err != nil {
 		r.log.Error(err)
+	} else {
+		r.log.Infow("Got comments for article",
+			"articleID", obj.ID,
+		)
 	}
-	r.log.Infow("Got comments for article",
-		"articleID", obj.ID,
-	)
 	return comments, err
 }
 
@@ -42,10 +44,11 @@ func (r *mutationResolver) CreateArticle(ctx context.Context, input model.NewArt
 	article, err := r.articles.Create(ctx, input)
 	if err != nil {
 		r.log.Error(err)
+	} else {
+		r.log.Infow("Article created",
+			"articleID", article.ID,
+		)
 	}
-	r.log.Infow("Article created",
-		"articleID", article.ID,
-	)
 	return article, err
 }
 
@@ -54,10 +57,11 @@ func (r *mutationResolver) UpdateArticle(ctx context.Context, input model.Update
 	article, err := r.articles.Update(ctx, input)
 	if err != nil {
 		r.log.Error(err)
+	} else {
+		r.log.Infow("Article updated",
+			"articleID", article.ID,
+		)
 	}
-	r.log.Infow("Article updated",
-		"articleID", article.ID,
-	)
 	return article, err
 }
 
@@ -66,8 +70,7 @@ func (r *mutationResolver) DeleteArticle(ctx context.Context, id string) (bool, 
 	deleted, err := r.articles.Delete(ctx, id)
 	if err != nil {
 		r.log.Error(err)
-	}
-	if deleted {
+	} else if deleted {
 		r.log.Infow("Article deleted",
 			"articleID", id,
 		)
@@ -84,11 +87,12 @@ func (r *queryResolver) ArticlesList(ctx context.Context, after *string, sort *m
 	articles, err := r.articles.GetList(ctx, after, sort)
 	if err != nil {
 		r.log.Error(err)
+	} else {
+		r.log.Infow("Got articles list",
+			"after", after,
+			"sort", sort,
+		)
 	}
-	r.log.Infow("Got articles list",
-		"after", after,
-		"sort", sort,
-	)
 	return articles, err
 }
 
@@ -97,10 +101,11 @@ func (r *queryResolver) Article(ctx context.Context, articleID string) (*model.A
 	article, err := r.articles.Get(ctx, articleID)
 	if err != nil {
 		r.log.Error(err)
+	} else {
+		r.log.Infow("Got article",
+			"articleID", articleID,
+		)
 	}
-	r.log.Infow("Got article",
-		"articleID", articleID,
-	)
 	return article, err
 }
 
