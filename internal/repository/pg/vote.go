@@ -49,7 +49,8 @@ func (r *Repository) SetCommentVote(ctx context.Context, userID string, input mo
 	err := r.pool.QueryRow(ctx, q, input.CommentID, userID, value).Scan(&votes)
 
 	if err != nil {
-		return 0, errors.NewInternalServerError(fmt.Errorf("VoteRepository.SetCommentVote: %w", err))
+		return 0, errors.NewInternalServerError(fmt.Errorf(
+			"VoteRepository.SetCommentVote: %w", err))
 	}
 	return votes, nil
 }

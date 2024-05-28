@@ -17,7 +17,8 @@ func (r *Repository) CreateArticle(ctx context.Context, userID string,
 
 	err := r.pool.QueryRow(ctx, q, userID, input.Title, input.Content, input.IsClosed).Scan(&a.ID, &a.CreatedAt)
 	if err != nil {
-		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.CreateArticle: %w", err))
+		return nil, errors.NewInternalServerError(fmt.Errorf(
+			"ArticleRepository.CreateArticle: %w", err))
 	}
 
 	a.Title = input.Title
@@ -138,13 +139,15 @@ func (r *Repository) GetArticle(ctx context.Context, articleID string) (*model.A
 		return nil, errors.NewNotFoundError(fmt.Errorf("ArticleRepository.GetArticle: %w", err))
 	}
 	if err != nil {
-		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.GetArticle: %w", err))
+		return nil, errors.NewInternalServerError(fmt.Errorf(
+			"ArticleRepository.GetArticle: %w", err))
 	}
 
 	return &article, nil
 }
 
-func (r *Repository) GetComments(ctx context.Context, articleID string, after *string, sort *model.Sort) ([]*model.Comment, error) {
+func (r *Repository) GetComments(ctx context.Context, articleID string, after *string,
+	sort *model.Sort) ([]*model.Comment, error) {
 	q := `
 		SELECT c.id, c.body, c.author_id, c.created_at,
 			COALESCE(SUM(v.value), 0) AS vote_sum
@@ -167,7 +170,8 @@ func (r *Repository) GetComments(ctx context.Context, articleID string, after *s
 	var comments []*model.Comment
 	rows, err := r.pool.Query(ctx, q, articleID, after, sort, CommentLimit)
 	if err != nil {
-		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.GetComments: %w", err))
+		return nil, errors.NewInternalServerError(fmt.Errorf(
+			"ArticleRepository.GetComments: %w", err))
 	}
 	defer rows.Close()
 

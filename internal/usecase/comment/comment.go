@@ -33,7 +33,8 @@ func NewUsecase(repo Repository) *Usecase {
 func (uc *Usecase) Create(ctx context.Context, input model.NewComment) (*model.Comment, error) {
 	userID := utils.GetUserID(ctx)
 	if userID == "" {
-		return nil, errors.NewUnauthorizedError("ArticleUsecase.CreateArticle: unauthenticated, userID is empty")
+		return nil, errors.NewUnauthorizedError("ArticleUsecase.CreateArticle: " +
+			"unauthenticated, userID is empty")
 	}
 
 	isClosed, err := uc.repo.IsArticleClosed(ctx, input.ArticleID)
@@ -64,7 +65,8 @@ func (uc *Usecase) Update(ctx context.Context, input model.UpdateComment) (*mode
 		return nil, err
 	}
 	if !isAuthor {
-		return nil, errors.NewForbiddenError("CommentUsecase.UpdateArticle: you are not the author of this comment")
+		return nil, errors.NewForbiddenError("CommentUsecase.UpdateArticle: " +
+			"you are not the author of this comment")
 	}
 	return uc.repo.UpdateComment(ctx, input)
 }
@@ -75,7 +77,8 @@ func (uc *Usecase) Delete(ctx context.Context, id string) (bool, error) {
 		return false, err
 	}
 	if !isAuthor {
-		return false, errors.NewForbiddenError("CommentUsecase.DeleteArticle: you are not the author of this comment")
+		return false, errors.NewForbiddenError("CommentUsecase.DeleteArticle: " +
+			"you are not the author of this comment")
 	}
 	return uc.repo.DeleteComment(ctx, id)
 }

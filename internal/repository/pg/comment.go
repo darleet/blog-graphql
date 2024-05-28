@@ -35,7 +35,8 @@ func (r *Repository) CreateComment(ctx context.Context, userID string,
 	err := r.pool.QueryRow(ctx, q, input.ArticleID, userID, input.ParentID, input.Content).Scan(&c.ID, &c.CreatedAt)
 
 	if err != nil {
-		return nil, errors.NewInternalServerError(fmt.Errorf("CommentRepository.CreateComment: %w", err))
+		return nil, errors.NewInternalServerError(fmt.Errorf(
+			"CommentRepository.CreateComment: %w", err))
 	}
 	c.Content = input.Content
 	c.UserID = userID
@@ -102,7 +103,8 @@ func (r *Repository) GetReplies(ctx context.Context, commentID string, after *st
 		return nil, errors.NewNotFoundError(fmt.Errorf("CommentRepository.GetReplies: %w", err))
 	}
 	if err != nil {
-		return nil, errors.NewInternalServerError(fmt.Errorf("CommentRepository.GetReplies: %w", err))
+		return nil, errors.NewInternalServerError(fmt.Errorf(
+			"CommentRepository.GetReplies: %w", err))
 	}
 	defer rows.Close()
 
@@ -110,7 +112,8 @@ func (r *Repository) GetReplies(ctx context.Context, commentID string, after *st
 		var comment model.Comment
 		err = rows.Scan(&comment.ID, &comment.CreatedAt, &comment.UserID, &comment.Content, &comment.Votes)
 		if err != nil {
-			return nil, errors.NewInternalServerError(fmt.Errorf("CommentRepository.GetReplies: %w", err))
+			return nil, errors.NewInternalServerError(fmt.Errorf(
+				"CommentRepository.GetReplies: %w", err))
 		}
 		c = append(c, &comment)
 	}
