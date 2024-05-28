@@ -6,6 +6,7 @@ package resolver
 
 import (
 	"context"
+	"github.com/darleet/blog-graphql/pkg/utils"
 
 	"github.com/darleet/blog-graphql/internal/model"
 	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
@@ -13,32 +14,87 @@ import (
 
 // Author is the resolver for the author field.
 func (r *commentResolver) Author(ctx context.Context, obj *model.Comment) (*model.User, error) {
-	return r.users.GetUser(ctx, obj.UserID)
+	user, err := r.users.GetUser(ctx, obj.UserID)
+	if err != nil {
+		r.log.Error(err)
+	} else {
+		r.log.Infow("Got author for comment",
+			"userID", obj.UserID,
+			"commentID", obj.ID,
+		)
+	}
+	return user, err
 }
 
 // Replies is the resolver for the replies field.
-func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, after *string, sort *model.Sort) ([]*model.Comment, error) {
-	return r.comments.GetReplies(ctx, obj.ID, after, sort)
+func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, after *string,
+	sort *model.Sort) ([]*model.Comment, error) {
+	replies, err := r.comments.GetReplies(ctx, obj.ID, after, sort)
+	if err != nil {
+		r.log.Error(err)
+	} else {
+		r.log.Infow("Got replies for comment",
+			"commentID", obj.ID,
+		)
+	}
+	return replies, err
 }
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error) {
-	return r.comments.Create(ctx, input)
+	comment, err := r.comments.Create(ctx, input)
+	if err != nil {
+		r.log.Error(err)
+	} else {
+		r.log.Infow("Comment created",
+			"commentID", comment.ID,
+		)
+	}
+	return comment, err
 }
 
 // UpdateComment is the resolver for the updateComment field.
 func (r *mutationResolver) UpdateComment(ctx context.Context, input model.UpdateComment) (*model.Comment, error) {
-	return r.comments.Update(ctx, input)
+	comment, err := r.comments.Update(ctx, input)
+	if err != nil {
+		r.log.Error(err)
+	} else {
+		r.log.Infow("Comment updated",
+			"commentID", comment.ID,
+		)
+	}
+	return comment, err
 }
 
 // DeleteComment is the resolver for the deleteComment field.
 func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (bool, error) {
-	return r.comments.Delete(ctx, id)
+	deleted, err := r.comments.Delete(ctx, id)
+	if err != nil {
+		r.log.Error(err)
+	} else if deleted {
+		r.log.Infow("Comment deleted",
+			"commentID", id,
+		)
+	} else {
+		r.log.Infow("Comment was not deleted",
+			"commentID", id,
+		)
+	}
+	return deleted, err
 }
 
 // ListenComments is the resolver for the listenComments field.
 func (r *subscriptionResolver) ListenComments(ctx context.Context, articleID string) (<-chan *model.Comment, error) {
-	return r.comments.Subscribe(ctx, articleID)
+	c, err := r.comments.Subscribe(ctx, articleID)
+	if err != nil {
+		r.log.Error(err)
+	} else {
+		r.log.Infow("User subscribed to comments for article",
+			"articleID", articleID,
+			"userID", utils.GetUserID(ctx),
+		)
+	}
+	return c, err
 }
 
 // Comment returns runtime.CommentResolver implementation.
