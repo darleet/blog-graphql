@@ -23,5 +23,5 @@ func (r *Repository) GetUsers(ctx context.Context, userID []string) ([]*model.Us
 		}
 		users = append(users, &user)
 	}
-	return users, nil
+	return users, errors
 }
