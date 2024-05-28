@@ -4,8 +4,8 @@ import (
 	"context"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/darleet/blog-graphql/internal/middleware/auth"
+	"github.com/darleet/blog-graphql/internal/middleware/logging"
 	"github.com/darleet/blog-graphql/internal/ports/gql/resolver"
 	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
 	"github.com/darleet/blog-graphql/internal/repository/pg"
@@ -22,6 +22,7 @@ const defaultPort = "8888"
 
 func main() {
 	log := zap.Must(zap.NewDevelopment()).Sugar()
+	defer log.Sync()
 
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
@@ -50,9 +51,9 @@ func main() {
 	srv.AddTransport(&transport.Websocket{})
 
 	authMW := auth.NewMiddleware()
+	logMW := logging.NewMiddleware(log)
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", authMW(srv))
+	http.Handle("/query", authMW(logMW(srv)))
 
 	log.Info("Server started on http://localhost:%s/", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
