@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/darleet/blog-graphql/internal/middleware/auth"
 	"github.com/darleet/blog-graphql/internal/middleware/loader"
@@ -57,6 +58,8 @@ func main() {
 	srv := handler.NewDefaultServer(runtime.NewExecutableSchema(res))
 
 	srv.AddTransport(&transport.Websocket{})
+
+	srv.Use(extension.FixedComplexityLimit(300))
 
 	authMW := auth.NewMiddleware()
 	logMW := logging.NewMiddleware(log)
