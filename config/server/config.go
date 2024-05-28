@@ -7,6 +7,9 @@ import (
 	"strconv"
 )
 
+const ModeMemory = "MEMORY"
+const ModePostgres = "POSTGRES"
+
 type Config struct {
 	Host            string
 	Port            string
@@ -44,11 +47,11 @@ func NewConfig(paths ...string) (*Config, error) {
 
 	config.Mode, ok = os.LookupEnv("MODE")
 	if !ok {
-		config.Mode = "MEMORY"
+		config.Mode = ModeMemory
 	}
 
 	config.PostgresURL, ok = os.LookupEnv("PG_URL")
-	if !ok && config.Mode == "POSTGRES" {
+	if !ok && config.Mode == ModePostgres {
 		return nil, fmt.Errorf("missing PG_URL")
 	}
 
