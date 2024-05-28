@@ -5,6 +5,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/darleet/blog-graphql/internal/middleware/auth"
+	"github.com/darleet/blog-graphql/internal/middleware/loader"
 	"github.com/darleet/blog-graphql/internal/middleware/logging"
 	"github.com/darleet/blog-graphql/internal/ports/gql/resolver"
 	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
@@ -58,7 +59,7 @@ func main() {
 	authMW := auth.NewMiddleware()
 	logMW := logging.NewMiddleware(log)
 
-	http.Handle("/query", authMW(logMW(srv)))
+	http.Handle("/query", loader.Middleware(repo, authMW(logMW(srv))))
 
 	log.Info("Server started on http://localhost:%s/", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
