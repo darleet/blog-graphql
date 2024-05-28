@@ -13,7 +13,6 @@ import (
 	"github.com/darleet/blog-graphql/internal/usecase/comment"
 	"github.com/darleet/blog-graphql/internal/usecase/vote"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -22,12 +21,7 @@ import (
 const defaultPort = "8888"
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	port := os.Getenv("PORT")
+	port := os.Getenv("SERVER_PORT")
 	if port == "" {
 		port = defaultPort
 	}
