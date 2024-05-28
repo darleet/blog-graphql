@@ -1,23 +1,22 @@
 package pg
 
 import (
-	"context"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const ArticleLimit = 5
 const CommentLimit = 5
 
 type Repository struct {
-	conn *pgx.Conn
+	pool *pgxpool.Pool
 }
 
-func NewRepository(conn *pgx.Conn) *Repository {
+func NewRepository(pool *pgxpool.Pool) *Repository {
 	return &Repository{
-		conn: conn,
+		pool: pool,
 	}
 }
 
-func (r *Repository) Close(ctx context.Context) error {
-	return r.conn.Close(ctx)
+func (r *Repository) Close() {
+	r.pool.Close()
 }

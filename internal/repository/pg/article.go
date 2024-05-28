@@ -15,7 +15,7 @@ func (r *Repository) CreateArticle(ctx context.Context, userID string,
 	q := "INSERT INTO articles (author_id, title, body, is_closed) VALUES ($1, $2, $3, $4) RETURNING id, created_at"
 	var a model.Article
 
-	err := r.conn.QueryRow(ctx, q, userID, input.Title, input.Content, input.IsClosed).Scan(&a.ID, &a.CreatedAt)
+	err := r.pool.QueryRow(ctx, q, userID, input.Title, input.Content, input.IsClosed).Scan(&a.ID, &a.CreatedAt)
 	if err != nil {
 		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.CreateArticle: %w", err))
 	}
@@ -39,7 +39,7 @@ func (r *Repository) UpdateArticle(ctx context.Context, input model.UpdateArticl
 	`
 
 	var a model.Article
-	err := r.conn.QueryRow(ctx, q, input.Title, input.Content, input.IsClosed).
+	err := r.pool.QueryRow(ctx, q, input.Title, input.Content, input.IsClosed).
 		Scan(&a.Title, &a.Content, &a.IsClosed, &a.CreatedAt, &a.Votes, &a.UserID)
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return nil, errors.NewNotFoundError(fmt.Errorf("ArticleRepository.UpdateArticle: %w", err))
@@ -55,7 +55,7 @@ func (r *Repository) UpdateArticle(ctx context.Context, input model.UpdateArticl
 func (r *Repository) DeleteArticle(ctx context.Context, id string) (bool, error) {
 	q := `DELETE FROM articles WHERE id = $1`
 
-	_, err := r.conn.Exec(ctx, q, id)
+	_, err := r.pool.Exec(ctx, q, id)
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return false, errors.NewNotFoundError(fmt.Errorf("ArticleRepository.DeleteArticle: %w", err))
 	} else if err != nil {
@@ -81,7 +81,7 @@ func (r *Repository) GetArticlesList(ctx context.Context, after *string, sort *m
 	`
 
 	var articles []*model.Article
-	rows, err := r.conn.Query(ctx, query, after, sort, ArticleLimit)
+	rows, err := r.pool.Query(ctx, query, after, sort, ArticleLimit)
 	if err != nil {
 		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.GetArticlesList: %w", err))
 	}
@@ -119,7 +119,7 @@ func (r *Repository) GetArticle(ctx context.Context, articleID string) (*model.A
 	`
 
 	var article model.Article
-	err := r.conn.QueryRow(ctx, q, articleID).Scan(
+	err := r.pool.QueryRow(ctx, q, articleID).Scan(
 		&article.ID,
 		&article.Title,
 		&article.Content,
@@ -155,7 +155,7 @@ func (r *Repository) GetComments(ctx context.Context, articleID string, after *s
 	`
 
 	var comments []*model.Comment
-	rows, err := r.conn.Query(ctx, q, articleID, sort, CommentLimit)
+	rows, err := r.pool.Query(ctx, q, articleID, sort, CommentLimit)
 	if err != nil {
 		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.GetComments: %w", err))
 	}
@@ -187,7 +187,7 @@ func (r *Repository) GetArticleAuthorID(ctx context.Context, id string) (string,
 	q := "SELECT author_id FROM articles WHERE id = $1"
 
 	var authorID string
-	err := r.conn.QueryRow(ctx, q, id).Scan(&authorID)
+	err := r.pool.QueryRow(ctx, q, id).Scan(&authorID)
 
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return "", errors.NewNotFoundError(fmt.Errorf("ArticleRepository.GetArticleAuthorID: %w", err))

@@ -17,7 +17,7 @@ func (r *Repository) CreateComment(ctx context.Context, userID string,
 	`
 
 	var c model.Comment
-	err := r.conn.QueryRow(ctx, q, input.ArticleID, userID, input.ParentID, input.Content).Scan(&c.ID, &c.CreatedAt)
+	err := r.pool.QueryRow(ctx, q, input.ArticleID, userID, input.ParentID, input.Content).Scan(&c.ID, &c.CreatedAt)
 
 	if err != nil {
 		return nil, errors.NewInternalServerError(fmt.Errorf("CommentRepository.CreateComment: %w", err))
@@ -37,7 +37,7 @@ func (r *Repository) UpdateComment(ctx context.Context, input model.UpdateCommen
 	`
 
 	var c model.Comment
-	err := r.conn.QueryRow(ctx, q, input.Content, input.ID).Scan(&c.CreatedAt, &c.UserID, &c.Content, &c.Votes)
+	err := r.pool.QueryRow(ctx, q, input.Content, input.ID).Scan(&c.CreatedAt, &c.UserID, &c.Content, &c.Votes)
 
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return nil, errors.NewNotFoundError(fmt.Errorf("CommentRepository.UpdateComment: %w", err))
@@ -49,7 +49,7 @@ func (r *Repository) UpdateComment(ctx context.Context, input model.UpdateCommen
 
 func (r *Repository) DeleteComment(ctx context.Context, id string) (bool, error) {
 	q := "DELETE FROM comments WHERE id = $1"
-	_, err := r.conn.Exec(ctx, q, id)
+	_, err := r.pool.Exec(ctx, q, id)
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return false, errors.NewNotFoundError(fmt.Errorf("CommentRepository.DeleteComment: %w", err))
 	}
@@ -75,7 +75,7 @@ func (r *Repository) GetReplies(ctx context.Context, commentID string, after *st
 	`
 
 	var c []*model.Comment
-	rows, err := r.conn.Query(ctx, q, commentID)
+	rows, err := r.pool.Query(ctx, q, commentID)
 
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return nil, errors.NewNotFoundError(fmt.Errorf("CommentRepository.GetReplies: %w", err))
@@ -100,7 +100,7 @@ func (r *Repository) GetReplies(ctx context.Context, commentID string, after *st
 func (r *Repository) GetCommentAuthorID(ctx context.Context, id string) (string, error) {
 	q := "SELECT author_id FROM comments WHERE id = $1"
 	var userID string
-	err := r.conn.QueryRow(ctx, q, id).Scan(&userID)
+	err := r.pool.QueryRow(ctx, q, id).Scan(&userID)
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return "", errors.NewNotFoundError(fmt.Errorf("CommentRepository.GetCommentAuthorID: %w", err))
 	}
