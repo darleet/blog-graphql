@@ -51,7 +51,7 @@ func main() {
 
 	articles := article.NewUsecase(repo)
 	comments := comment.NewUsecase(repo)
-	votes := vote.NewUsecase(nil)
+	votes := vote.NewUsecase(repo)
 	users := user.NewUsecase()
 
 	res := resolver.NewRootResolvers(log, articles, comments, users, votes)
