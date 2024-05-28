@@ -33,7 +33,7 @@ func (r *Repository) SetArticleVote(ctx context.Context, userID string, input mo
 	if err != nil {
 		return 0, errors.NewInternalServerError(fmt.Errorf("VoteRepository.SetArticleVote: %w", err))
 	}
-	return votes, nil
+	return votes + value, nil
 }
 
 func (r *Repository) SetCommentVote(ctx context.Context, userID string, input model.VoteComment) (int, error) {
@@ -52,5 +52,5 @@ func (r *Repository) SetCommentVote(ctx context.Context, userID string, input mo
 		return 0, errors.NewInternalServerError(fmt.Errorf(
 			"VoteRepository.SetCommentVote: %w", err))
 	}
-	return votes, nil
+	return votes + value, nil
 }
