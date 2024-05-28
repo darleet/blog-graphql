@@ -42,6 +42,7 @@ func (r *Repository) CreateComment(ctx context.Context, userID string, input mod
 		ID:        strconv.FormatUint(r.serialComments, 10),
 		Content:   comment.Content,
 		UserID:    strconv.FormatUint(comment.UserID, 10),
+		Votes:     0,
 		CreatedAt: comment.CreatedAt,
 	}
 
@@ -135,6 +136,7 @@ func (r *Repository) GetReplies(ctx context.Context, commentID string, after *st
 			ID:        strconv.FormatUint(comments[k].ID, 10),
 			Content:   comments[k].Content,
 			UserID:    strconv.FormatUint(comments[k].UserID, 10),
+			Votes:     voteSum(comments[k].Votes),
 			CreatedAt: comments[k].CreatedAt,
 		})
 	}

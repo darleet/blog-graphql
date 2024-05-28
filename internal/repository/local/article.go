@@ -32,6 +32,7 @@ func (r *Repository) CreateArticle(ctx context.Context, userID string,
 		Title:     article.Title,
 		Content:   article.Content,
 		UserID:    strconv.FormatUint(article.UserID, 10),
+		Votes:     0,
 		IsClosed:  article.IsClosed,
 		CreatedAt: article.CreatedAt,
 	}
@@ -66,6 +67,7 @@ func (r *Repository) UpdateArticle(ctx context.Context, input model.UpdateArticl
 		Title:     article.Title,
 		Content:   article.Content,
 		UserID:    strconv.FormatUint(article.UserID, 10),
+		Votes:     voteSum(article.Votes),
 		IsClosed:  article.IsClosed,
 		CreatedAt: article.CreatedAt,
 	}
@@ -133,6 +135,7 @@ func (r *Repository) GetArticlesList(ctx context.Context, after *string,
 			Title:     articles[k].Title,
 			Content:   articles[k].Content,
 			UserID:    strconv.FormatUint(articles[k].UserID, 10),
+			Votes:     voteSum(articles[k].Votes),
 			IsClosed:  articles[k].IsClosed,
 			CreatedAt: articles[k].CreatedAt,
 		})
@@ -155,6 +158,7 @@ func (r *Repository) GetArticle(ctx context.Context, articleID string) (*model.A
 		Title:     article.Title,
 		Content:   article.Content,
 		UserID:    strconv.FormatUint(article.UserID, 10),
+		Votes:     voteSum(article.Votes),
 		IsClosed:  article.IsClosed,
 		CreatedAt: article.CreatedAt,
 	}
@@ -214,6 +218,7 @@ func (r *Repository) GetComments(ctx context.Context, articleID string, after *s
 			ID:        strconv.FormatUint(comments[k].ID, 10),
 			Content:   comments[k].Content,
 			UserID:    strconv.FormatUint(comments[k].UserID, 10),
+			Votes:     voteSum(comments[k].Votes),
 			CreatedAt: comments[k].CreatedAt,
 		})
 	}
