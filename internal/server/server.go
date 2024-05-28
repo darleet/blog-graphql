@@ -96,6 +96,6 @@ func (s *Server) Start() error {
 	}
 
 	http.Handle("/query", h)
-	s.log.Info("Server started on http://%s:%s/", s.config.Host, s.config.Port)
+	s.log.Infof("Server started on http://%s:%s/", s.config.Host, s.config.Port)
 	return http.ListenAndServe(s.config.Host+":"+s.config.Port, nil)
 }
