@@ -62,7 +62,7 @@ func main() {
 
 	srv.Use(extension.FixedComplexityLimit(300))
 
-	recMW := recoverer.Middleware()
+	recMW := recoverer.Middleware(log)
 	authMW := auth.Middleware()
 	logMW := logging.Middleware(log)
 
