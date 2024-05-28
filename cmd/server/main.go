@@ -8,6 +8,7 @@ import (
 	"github.com/darleet/blog-graphql/internal/middleware/auth"
 	"github.com/darleet/blog-graphql/internal/middleware/loader"
 	"github.com/darleet/blog-graphql/internal/middleware/logging"
+	"github.com/darleet/blog-graphql/internal/middleware/recoverer"
 	"github.com/darleet/blog-graphql/internal/ports/gql/resolver"
 	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
 	"github.com/darleet/blog-graphql/internal/repository/pg"
@@ -61,10 +62,11 @@ func main() {
 
 	srv.Use(extension.FixedComplexityLimit(300))
 
-	authMW := auth.NewMiddleware()
-	logMW := logging.NewMiddleware(log)
+	recMW := recoverer.Middleware()
+	authMW := auth.Middleware()
+	logMW := logging.Middleware(log)
 
-	http.Handle("/query", loader.Middleware(repo, authMW(logMW(srv))))
+	http.Handle("/query", loader.Middleware(repo, authMW(logMW(recMW(srv)))))
 
 	log.Info("Server started on http://localhost:%s/", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

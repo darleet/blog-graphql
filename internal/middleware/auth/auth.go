@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// NewMiddleware returns simple middleware that puts the userID from cookies in the context
-func NewMiddleware() func(http.Handler) http.Handler {
+// Middleware returns simple middleware that puts the userID from cookies in the context
+func Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			c := r.Header.Get("User-ID")
