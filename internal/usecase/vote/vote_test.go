@@ -31,7 +31,7 @@ func (s *VoteTestSuite) TestVoteArticleUpvote() {
 	s.repo.On("SetArticleVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteArticle")).
-		Return(1).
+		Return(1, nil).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
@@ -47,7 +47,7 @@ func (s *VoteTestSuite) TestVoteArticleDownvote() {
 	s.repo.On("SetArticleVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteArticle")).
-		Return(-1).
+		Return(-1, nil).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
@@ -72,7 +72,7 @@ func (s *VoteTestSuite) TestVoteCommentUpvote() {
 	s.repo.On("SetCommentVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteComment")).
-		Return(1).
+		Return(1, nil).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
@@ -88,7 +88,7 @@ func (s *VoteTestSuite) TestVoteCommentDownvote() {
 	s.repo.On("SetCommentVote", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.VoteComment")).
-		Return(-1).
+		Return(-1, nil).
 		Once()
 
 	ctx := utils.SetUserID(context.Background(), "4321")
