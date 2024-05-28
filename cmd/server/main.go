@@ -47,8 +47,10 @@ func main() {
 
 	srv.AddTransport(&transport.Websocket{})
 
+	authMW := auth.NewMiddleware()
+
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", auth.Middleware(srv))
+	http.Handle("/query", authMW(srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
