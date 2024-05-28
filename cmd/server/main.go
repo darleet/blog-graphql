@@ -12,6 +12,7 @@ import (
 	"github.com/darleet/blog-graphql/internal/repository/pg"
 	"github.com/darleet/blog-graphql/internal/usecase/article"
 	"github.com/darleet/blog-graphql/internal/usecase/comment"
+	"github.com/darleet/blog-graphql/internal/usecase/user"
 	"github.com/darleet/blog-graphql/internal/usecase/vote"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
@@ -50,8 +51,9 @@ func main() {
 	articles := article.NewUsecase(repo)
 	comments := comment.NewUsecase(repo)
 	votes := vote.NewUsecase(nil)
+	users := user.NewUsecase()
 
-	res := resolver.NewRootResolvers(log, articles, comments, nil, votes)
+	res := resolver.NewRootResolvers(log, articles, comments, users, votes)
 	srv := handler.NewDefaultServer(runtime.NewExecutableSchema(res))
 
 	srv.AddTransport(&transport.Websocket{})

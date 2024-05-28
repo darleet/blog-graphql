@@ -2,19 +2,11 @@ package pg
 
 import (
 	"context"
-	"fmt"
 	"github.com/darleet/blog-graphql/internal/model"
-	"strconv"
 )
 
 func (r *Repository) GetUsers(ctx context.Context, userID []string) ([]*model.User, []error) {
-	var params string
-	for i := range userID {
-		params += "$" + strconv.Itoa(i+1) + ","
-	}
-	params = params[:len(params)-1]
-
-	query := fmt.Sprintf(`SELECT id, username, avatar_url FROM users WHERE id IN (%s)`, params)
+	query := `SELECT id, username, avatar_url FROM users WHERE id = ANY ($1)`
 
 	rows, err := r.pool.Query(ctx, query, userID)
 	if err != nil {
