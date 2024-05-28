@@ -41,6 +41,11 @@ func (s *CommentTestSuite) TestCreate() {
 		ArticleID: "1234",
 	}
 
+	s.repo.On("IsArticleClosed", mock.Anything,
+		mock.AnythingOfType("string")).
+		Return(false, nil).
+		Once()
+
 	s.repo.On("CreateComment", mock.Anything,
 		mock.AnythingOfType("string"),
 		mock.AnythingOfType("model.NewComment")).
@@ -51,6 +56,23 @@ func (s *CommentTestSuite) TestCreate() {
 	got, err := s.uc.Create(ctx, input)
 	require.NoError(s.T(), err)
 	require.Equal(s.T(), comment, got)
+}
+
+func (s *CommentTestSuite) TestCreateClosed() {
+	input := model.NewComment{
+		Content:   comment.Content,
+		ArticleID: "1234",
+	}
+
+	s.repo.On("IsArticleClosed", mock.Anything,
+		mock.AnythingOfType("string")).
+		Return(true, nil).
+		Once()
+
+	ctx := utils.SetUserID(context.Background(), "4321")
+	got, err := s.uc.Create(ctx, input)
+	require.ErrorIs(s.T(), err, errors.Forbidden)
+	require.Nil(s.T(), got)
 }
 
 func (s *CommentTestSuite) TestCreateNoID() {
