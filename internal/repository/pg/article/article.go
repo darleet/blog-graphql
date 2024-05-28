@@ -130,12 +130,9 @@ func (r *Repository) GetArticlesList(ctx context.Context, after *string, sort *m
 
 func (r *Repository) GetArticle(ctx context.Context, articleID string) (*model.Article, error) {
 	q := `
-		SELECT a.id, a.title, a.body, a.author_id, a.is_closed, a.created_at,
-			COALESCE(SUM(c.value), 0) AS vote_sum
-		FROM articles a
-		LEFT JOIN articles_votes c ON a.id = c.article_id
-		WHERE a.id = $1
-		GROUP BY a.id
+		SELECT *, 
+		       (SELECT COALESCE(SUM(value), 0) AS vote_sum FROM articles_votes WHERE article_id = $1) 
+		FROM articles WHERE id = $1
 	`
 
 	var article model.Article
@@ -151,7 +148,8 @@ func (r *Repository) GetArticle(ctx context.Context, articleID string) (*model.A
 
 	if err != nil && errs.Is(err, pgx.ErrNoRows) {
 		return nil, errors.NewNotFoundError(fmt.Errorf("ArticleRepository.GetArticle: %w", err))
-	} else if err != nil {
+	}
+	if err != nil {
 		return nil, errors.NewInternalServerError(fmt.Errorf("ArticleRepository.GetArticle: %w", err))
 	}
 
