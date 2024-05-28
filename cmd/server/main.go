@@ -32,11 +32,17 @@ func main() {
 		port = defaultPort
 	}
 
-	conn, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
+	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	repo := pg.NewRepository(conn)
+
+	err = pool.Ping(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repo := pg.NewRepository(pool)
 
 	articles := article.NewUsecase(repo)
 	comments := comment.NewUsecase(repo)
