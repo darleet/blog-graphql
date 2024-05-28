@@ -22,7 +22,12 @@ const defaultPort = "8888"
 
 func main() {
 	log := zap.Must(zap.NewDevelopment()).Sugar()
-	defer log.Sync()
+	defer func(log *zap.SugaredLogger) {
+		err := log.Sync()
+		if err != nil {
+			log.Error(err)
+		}
+	}(log)
 
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
