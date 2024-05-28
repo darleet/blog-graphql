@@ -7,6 +7,7 @@ import (
 	"github.com/darleet/blog-graphql/internal/ports/gql/runtime"
 	"github.com/darleet/blog-graphql/pkg/errors"
 	"github.com/darleet/blog-graphql/pkg/utils"
+	"go.uber.org/zap"
 )
 
 // This file will not be regenerated automatically.
@@ -40,16 +41,19 @@ type VoteUsecase interface {
 }
 
 type Resolver struct {
+	log      *zap.SugaredLogger
 	articles ArticleUsecase
 	comments CommentUsecase
 	users    UserUsecase
 	votes    VoteUsecase
 }
 
-func NewRootResolvers(articles ArticleUsecase, comments CommentUsecase, users UserUsecase,
-	votes VoteUsecase) runtime.Config {
+func NewRootResolvers(log *zap.SugaredLogger, articles ArticleUsecase, comments CommentUsecase,
+	users UserUsecase, votes VoteUsecase) runtime.Config {
+
 	c := runtime.Config{
 		Resolvers: &Resolver{
+			log:      log,
 			articles: articles,
 			comments: comments,
 			users:    users,
@@ -66,5 +70,6 @@ func NewRootResolvers(articles ArticleUsecase, comments CommentUsecase, users Us
 			return nil, errors.NewUnauthorizedError("you are unauthorized to perform this action")
 		}
 	}
+
 	return c
 }

@@ -13,37 +13,95 @@ import (
 
 // Author is the resolver for the author field.
 func (r *articleResolver) Author(ctx context.Context, obj *model.Article) (*model.User, error) {
-	return r.users.GetUser(ctx, obj.UserID)
+	user, err := r.users.GetUser(ctx, obj.UserID)
+	if err != nil {
+		r.log.Error(err)
+	}
+	r.log.Infow("Got author for article",
+		"userID", obj.UserID,
+		"articleID", obj.ID,
+	)
+	return user, err
 }
 
 // Comments is the resolver for the comments field.
-func (r *articleResolver) Comments(ctx context.Context, obj *model.Article, after *string, sort *model.Sort) ([]*model.Comment, error) {
-	return r.articles.GetComments(ctx, obj.ID, after, sort)
+func (r *articleResolver) Comments(ctx context.Context, obj *model.Article, after *string,
+	sort *model.Sort) ([]*model.Comment, error) {
+	comments, err := r.articles.GetComments(ctx, obj.ID, after, sort)
+	if err != nil {
+		r.log.Error(err)
+	}
+	r.log.Infow("Got comments for article",
+		"articleID", obj.ID,
+	)
+	return comments, err
 }
 
 // CreateArticle is the resolver for the createArticle field.
 func (r *mutationResolver) CreateArticle(ctx context.Context, input model.NewArticle) (*model.Article, error) {
-	return r.articles.Create(ctx, input)
+	article, err := r.articles.Create(ctx, input)
+	if err != nil {
+		r.log.Error(err)
+	}
+	r.log.Infow("Article created",
+		"articleID", article.ID,
+	)
+	return article, err
 }
 
 // UpdateArticle is the resolver for the updateArticle field.
 func (r *mutationResolver) UpdateArticle(ctx context.Context, input model.UpdateArticle) (*model.Article, error) {
-	return r.articles.Update(ctx, input)
+	article, err := r.articles.Update(ctx, input)
+	if err != nil {
+		r.log.Error(err)
+	}
+	r.log.Infow("Article updated",
+		"articleID", article.ID,
+	)
+	return article, err
 }
 
 // DeleteArticle is the resolver for the deleteArticle field.
 func (r *mutationResolver) DeleteArticle(ctx context.Context, id string) (bool, error) {
-	return r.articles.Delete(ctx, id)
+	deleted, err := r.articles.Delete(ctx, id)
+	if err != nil {
+		r.log.Error(err)
+	}
+	if deleted {
+		r.log.Infow("Article deleted",
+			"articleID", id,
+		)
+	} else {
+		r.log.Infow("Article was not deleted",
+			"articleID", id,
+		)
+	}
+	return deleted, err
 }
 
 // ArticlesList is the resolver for the articlesList field.
 func (r *queryResolver) ArticlesList(ctx context.Context, after *string, sort *model.Sort) ([]*model.Article, error) {
-	return r.articles.GetList(ctx, after, sort)
+	article, err := r.articles.GetList(ctx, after, sort)
+	if err != nil {
+		r.log.Error(err)
+	}
+	r.log.Infow("Got articles list",
+		"after", after,
+		"sort", sort,
+	)
+	return article, err
 }
 
 // Article is the resolver for the article field.
 func (r *queryResolver) Article(ctx context.Context, articleID string) (*model.Article, error) {
-	return r.articles.Get(ctx, articleID)
+	article, err := r.articles.Get(ctx, articleID)
+	if err != nil {
+		r.log.Error(err)
+	}
+	r.log.Infow("Got article",
+		"articleID", articleID,
+	)
+	return article, err
 }
 
 // Article returns runtime.ArticleResolver implementation.

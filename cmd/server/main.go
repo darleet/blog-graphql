@@ -13,7 +13,7 @@ import (
 	"github.com/darleet/blog-graphql/internal/usecase/comment"
 	"github.com/darleet/blog-graphql/internal/usecase/vote"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"log"
+	"go.uber.org/zap"
 	"net/http"
 	"os"
 )
@@ -21,6 +21,8 @@ import (
 const defaultPort = "8888"
 
 func main() {
+	log := zap.Must(zap.NewDevelopment()).Sugar()
+
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
 		port = defaultPort
@@ -42,7 +44,7 @@ func main() {
 	comments := comment.NewUsecase(repo)
 	votes := vote.NewUsecase(nil)
 
-	res := resolver.NewRootResolvers(articles, comments, nil, votes)
+	res := resolver.NewRootResolvers(log, articles, comments, nil, votes)
 	srv := handler.NewDefaultServer(runtime.NewExecutableSchema(res))
 
 	srv.AddTransport(&transport.Websocket{})
@@ -52,7 +54,7 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", authMW(srv))
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Info("Server started on http://localhost:%s/", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 
 }
